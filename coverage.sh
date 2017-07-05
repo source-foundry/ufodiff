@@ -5,4 +5,4 @@ coverage report -m
 coverage html
 
 #coverage xml
-#codecov --token=$CODECOV_{{PROJECT}}
+#codecov --token=$CODECOV_{{ufodiff}}

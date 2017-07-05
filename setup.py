@@ -8,7 +8,7 @@ def docs_read(fname):
 
 
 def version_read():
-    settings_file = open(os.path.join(os.path.dirname(__file__), 'lib', '{{PROJECT}}', 'settings.py')).read()
+    settings_file = open(os.path.join(os.path.dirname(__file__), 'lib', 'ufodiff', 'settings.py')).read()
     major_regex = """major_version\s*?=\s*?["']{1}(\d+)["']{1}"""
     minor_regex = """minor_version\s*?=\s*?["']{1}(\d+)["']{1}"""
     patch_regex = """patch_version\s*?=\s*?["']{1}(\d+)["']{1}"""
@@ -28,24 +28,24 @@ def version_read():
 
 
 setup(
-    name='{{PROJECT}}',
+    name='ufodiff',
     version=version_read(),
-    description='',
+    description='UFO font source file diff application',
     long_description=(docs_read('README.rst')),
-    url='',
+    url='https://github.com/source-foundry/ufodiff',
     license='MIT license',
-    author='',
-    author_email='',
+    author='Christopher Simpkins',
+    author_email='chris@sourcefoundry.org',
     platforms=['any'],
     packages=find_packages("lib"),
     package_dir={'': 'lib'},
-    install_requires=['commandlines', 'standardstreams'],
+    install_requires=['commandlines', 'standardstreams', 'gitpython'],
     entry_points = {
         'console_scripts': [
-            '{{PROJECT}} = {{PROJECT}}.app:main'
+            'ufodiff = ufodiff.app:main'
         ],
 },
-    keywords='',
+    keywords='font, typeface, ufo, diff, source, ttf, otf',
     include_package_data=True,
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -60,6 +60,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
 )
