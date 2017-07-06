@@ -48,7 +48,13 @@ $ ufodiff delta all commits:1 > myfont_delta.txt
 
 <h4><a href=""> delta</a></h4>
 
-`ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits in text format.  The data is streamed through standard output.
+`ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits in text format.  The data is streamed through standard output in a newline delimited fashion with indicators for the type of file change.
+
+The file change indicators include:
+
+- **[A]** file added
+- **[D]** file deleted
+- **[M]** file modified
 
 For JSON formatted data, see the `deltajson` subcommand. 
 
@@ -82,6 +88,28 @@ Subcommands:
 
 Example:
   ufodiff deltajson all commits:3 <optional UFO filter>
+```
+
+JSON data are formatted as follows:
+
+```json
+{
+    "added": [
+      "filepath 1",
+      "filepath 2",
+      "filepath 3"
+    ],
+    "deleted": [
+      "filepath 1",
+      "filepath 2",
+      "filepath 3"
+    ],
+    "modified": [
+      "filepath 1",
+      "filepath 2",
+      "filepath 3"
+    ]
+}
 ```
 
 Increase or decrease integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
