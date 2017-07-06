@@ -48,7 +48,7 @@ $ ufodiff delta all commits:1 > myfont_delta.txt
 
 <h4><a href=""> delta</a></h4>
 
-`ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits in text format.  The data is streamed through standard output in a newline delimited fashion with indicators for the type of file change.
+`ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits in text format.  The data are streamed through standard output in a newline delimited fashion with indicators for the type of file change.
 
 The file change indicators include:
 
@@ -76,7 +76,7 @@ Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as la
 <h4><a href=""> deltajson</a></h4>
 
 
-`ufo deltajson` generates file modification, addition, and deletion reports over a user specified number of commits in JSON format.  The data is streamed through standard output.
+`ufo deltajson` generates file modification, addition, and deletion reports over a user specified number of commits in JSON format.  The data are streamed through standard output.
 
 For text formatted data, see the `delta` subcommand. 
 
