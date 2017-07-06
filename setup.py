@@ -30,7 +30,7 @@ def version_read():
 setup(
     name='ufodiff',
     version=version_read(),
-    description='UFO font source file diff application',
+    description='UFO font source file diff tool',
     long_description=(docs_read('README.rst')),
     url='https://github.com/source-foundry/ufodiff',
     license='MIT license',
@@ -40,7 +40,7 @@ setup(
     packages=find_packages("lib"),
     package_dir={'': 'lib'},
     install_requires=['commandlines', 'standardstreams', 'gitpython'],
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'ufodiff = ufodiff.app:main'
         ],
@@ -54,10 +54,8 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
