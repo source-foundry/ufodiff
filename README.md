@@ -2,9 +2,11 @@
 
 ufodiff is a source file diff tool for typefaces developed with UFO source.
 
-### Current Status
+### Current Release Status
 
-Unstable development version
+Unstable development version.
+
+[Changelog](https://github.com/source-foundry/ufodiff/blob/master/CHANGELOG.md)
 
 ### Install
 
