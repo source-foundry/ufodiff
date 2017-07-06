@@ -28,6 +28,12 @@ Installation with `pip` is recommended:
 Execute `ufodiff` inside your git repository.  It will recursively test for the repository root from up to 4 levels of repository directory depth.  If you are receiving exceptions due to inability to instantiate your git repository object, try bumping your working directory
 up a few levels closer to the root.  There are otherwise no restrictions to where `ufodiff` is executed in the repository.
 
+
+#### View Results in Terminal
+
+By default, data are displayed in your terminal.  Use one of the following approaches to either pipe data to another application or write data to a file.
+
+
 #### Piping Data to Other Applications
 
 Use the `|` idiom to pipe the standard output stream from `ufodiff` to another application for further processing like this:
