@@ -18,9 +18,9 @@ Unstable development version.
 ```
 Subcommands:
 
-- delta         --- text output to standard output stream
+- delta         --- HEAD vs. user defined previous commits as text output to standard output stream
    - all
-- deltajson     --- json output to standard output stream
+- deltajson     --- HEAD vs. user defined previous commits as json output to standard output stream
    - all
 
 Examples:
