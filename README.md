@@ -68,7 +68,7 @@ Examples:
   ufodiff delta all commits:3 <optional UFO filter>
 ```
 
-Increase or decrease integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
+Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
 
 Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
@@ -112,7 +112,7 @@ JSON data are formatted as follows:
 }
 ```
 
-Increase or decrease integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
+Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
 
 Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
