@@ -6,6 +6,10 @@ ufodiff is a source file diff tool for typefaces developed with UFO source.
 
 Unstable development version
 
+### Install
+
+`pip install ufodiff`
+
 
 ### Usage
 
