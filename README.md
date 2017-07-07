@@ -1,4 +1,4 @@
-## ufodiff
+## ufodiff [![Build Status](https://travis-ci.org/source-foundry/ufodiff.svg?branch=master)](https://travis-ci.org/source-foundry/ufodiff) [![Build status](https://ci.appveyor.com/api/projects/status/o2vdn1uf7uxau3o7/branch/master?svg=true)](https://ci.appveyor.com/project/chrissimpkins/ufodiff/branch/master)
 
 ufodiff is a command line source file diff tool for typefaces that are developed with UFO source.
 
