@@ -41,9 +41,10 @@ def main():
         stdout(settings.USAGE)
         sys.exit(0)
 
-    # DELTA + DELTAJSON sub-commands
-    #  ufodiff [delta|deltajson] [all | glyph | nonglyph | version] [commits:number] <UFO file path>
-    if c.subcmd == "delta" or c.subcmd == "deltajson":
+    # DELTA + DELTAJSON + DELTAMD sub-commands
+    #  ufodiff [delta|deltajson|deltamd] [all|glyph|nonglyph] [commits:number] <UFO file path>
+    acceptable_delta_ufodiff_subcmd_list = ['delta', 'deltajson', 'deltamd']
+    if c.subcmd in acceptable_delta_ufodiff_subcmd_list:
         acceptable_deltacommands = ['all', 'glyph', 'nonglyph']  # used in command line argument validations
 
         # Command line argument validations
@@ -51,17 +52,11 @@ def main():
             stderr("[ufodiff] ERROR: Too few arguments to the ufodiff delta command.")
             sys.exit(1)
         elif c.arg1 not in acceptable_deltacommands:  # acceptable sub command to delta
-            stderr("[ufodiff] ERROR: 'ufodiff delta " + c.arg1 + "' is not a valid request")
-            stderr("Acceptable subcommands for delta include:")
+            stderr("[ufodiff] ERROR: 'ufodiff " + c.arg0 + " " + c.arg1 + "' is not a valid request")
+            stderr("Acceptable arguments to " + c.arg0 + " include:")
             for acceptable_deltacommand in acceptable_deltacommands:
-                stderr("- " + acceptable_deltacommand)
+                stderr(" " + acceptable_deltacommand)
             sys.exit(1)
-        # elif not dir_exists(c.argv[-1]):  # ufo source directory does not exist
-        #     stderr("[ufodiff] ERROR: The path '" + c.argv[-1] + "' does not appear to be a UFO source directory")
-        #     sys.exit(1)
-        # elif not c.argv[-1].endswith(".ufo"):  # ufo source directory is not valid path name
-        #     stderr("[ufodiff] ERROR: The path '" + c.argv[-1] + "' is not properly named with '.ufo' extension")
-        #     sys.exit(1)
         elif not c.arg2.startswith("commits:"):  # did not include commits argument
             stderr("[ufodiff] ERROR: Please include the 'commits:[number]' argument immediately after '" + c.arg1 + "'")
             sys.exit(1)
@@ -121,14 +116,18 @@ def main():
             stderr("[ufodiff] ERROR: Please define a value over zero for the number of previous commits to diff")
             sys.exit(1)
 
+        # perform the delta analysis on the repository
         delta = Delta(verified_gitroot_path, ufo_directory_list, commits_number)
 
+        # handle subcommand + subsubcommand combinations
         if c.arg1 == "all":
             filepath_dict = delta.get_all_ufo_delta_fp_dict()
             if c.subcmd == "delta":
-                stdout_string = get_delta_string(filepath_dict, commits_number, write_format='text')
+                stdout_string = get_delta_string(filepath_dict, write_format='text')
             elif c.subcmd == "deltajson":
-                stdout_string = get_delta_string(filepath_dict, commits_number, write_format='json')
+                stdout_string = get_delta_string(filepath_dict, write_format='json')
+            elif c.subcmd == "deltamd":
+                stdout_string = get_delta_string(filepath_dict, write_format='markdown')
             sys.stdout.write(stdout_string)
         elif c.arg1 == "glyph":
             pass  # TODO: implement glyph only command handling with 'ufo delta glyph'

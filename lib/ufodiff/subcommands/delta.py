@@ -15,12 +15,17 @@ from ufodiff.utilities.ufo import Ufo
 
 
 class Delta(object):
+    """
+    Delta class stores delta subcommand data and provides methods to support creation of
+    delta / deltajson / deltamd reports.  Uses DeltaFilepathDict class to filter diff file list
+    by user specified UFO source directory filter and by added/deleted/modified status of the files
+    """
     def __init__(self, gitrepo_path, ufo_directory_list, commit_number):
-        self.gitrepo_path = gitrepo_path
+        self.gitrepo_path = gitrepo_path               # path to root of git repository
         self.ufo_directory_list = ufo_directory_list   # used to filter results by user defined UFO source directory
-        self.commit_number = commit_number
-        self.ufo = Ufo()
-        self.delta_fp_dict = DeltaFilepathDict(ufo_directory_list)
+        self.commit_number = commit_number             # user defined number of commits in git history to compare
+        self.ufo = Ufo()                               # Ufo class used for UFO source validations
+        self.delta_fp_dict = DeltaFilepathDict(ufo_directory_list)  # stores GitPython diffobj.a_rawpath values
 
         self.all_ufo_diffobj_list = []
         self.added_ufo_diffobj_list = []
@@ -87,7 +92,7 @@ class DeltaFilepathDict(object):
     def add_modified_filepaths(self, diffobj_list):
         modified_filepath_list = []
 
-        if len(self.ufo_directory_list) == 0:  # no user defined UFO source filters, include all UFO source
+        if len(self.ufo_directory_list) == 0:  # no user defined UFO source filters, include all UFO source paths
             for a_diffobj in diffobj_list:
                 modified_filepath_list.append(a_diffobj.a_rawpath)
         else:
@@ -101,19 +106,26 @@ class DeltaFilepathDict(object):
     def add_deleted_filepaths(self, diffobj_list):
         deleted_filepath_list = []
 
-        if len(self.ufo_directory_list) == 0:
+        if len(self.ufo_directory_list) == 0:  # no user defined UFO source filters, include all UFO source paths
             for a_diffobj in diffobj_list:
                 deleted_filepath_list.append(a_diffobj.a_rawpath)
         else:
             for a_diffobj in diffobj_list:
-                for ufo_directory_filter_path in self.ufo_directory_list:
+                for ufo_directory_filter_path in self.ufo_directory_list:  # filter for user defined UFO source
                     if ufo_directory_filter_path in a_diffobj.a_rawpath:
                         deleted_filepath_list.append(a_diffobj.a_rawpath)
 
         self.delta_dict['deleted'] = deleted_filepath_list
 
 
-def get_delta_string(delta_fp_dict_obj, commits_number, write_format):
+def get_delta_string(delta_fp_dict_obj, write_format):
+    """
+    Generates standard output text strings, JSON strings, and Markdown formatted strings for delta / deltajson / deltamd
+    commands
+    :param delta_fp_dict_obj: dictionary of GitPython diff objects as DeltaFilepathDict object class property .delta_dict
+    :param write_format: 'text', 'json', or 'markdown', defines delta, deltajson, and deltamd subcommand string generated
+    :return: string
+    """
     if write_format == 'text':
         textstring = ""
 
@@ -139,4 +151,35 @@ def get_delta_string(delta_fp_dict_obj, commits_number, write_format):
     elif write_format == 'json':
         return json.dumps(delta_fp_dict_obj.delta_dict)
     elif write_format == "markdown":
-        pass
+        markdown_string = ""
+
+        delta_fp_dict = delta_fp_dict_obj.delta_dict
+
+        # Added files block
+        markdown_string += "## Added Files" + os.linesep
+
+        if len(delta_fp_dict['added']) > 0:
+            for added_file in delta_fp_dict['added']:
+                markdown_string += "- " + added_file + os.linesep
+        else:
+            markdown_string += "- None" + os.linesep
+
+        # Deleted files block
+        markdown_string += os.linesep + os.linesep + "## Deleted Files" + os.linesep
+        if len(delta_fp_dict['deleted']) > 0:
+            for deleted_file in delta_fp_dict['deleted']:
+                markdown_string += "- " + deleted_file + os.linesep
+        else:
+            markdown_string += "- None" + os.linesep
+
+        # Modified files block
+        markdown_string += os.linesep + os.linesep + "## Modified Files" + os.linesep
+        if len(delta_fp_dict['modified']) > 0:
+            for modified_file in delta_fp_dict['modified']:
+                markdown_string += "- " + modified_file + os.linesep
+        else:
+            markdown_string += "- None" + os.linesep
+
+        return markdown_string
+
+
