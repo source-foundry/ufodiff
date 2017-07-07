@@ -16,7 +16,7 @@ lib_name = 'ufodiff'
 # ------------------------------------------------------------------------------
 major_version = "0"
 minor_version = "2"
-patch_version = "0"
+patch_version = "1"
 
 # ------------------------------------------------------------------------------
 # Help String
@@ -50,7 +50,7 @@ Increase or decrease integer value after the `commit:` argument to modify evalua
 # Usage String
 # ------------------------------------------------------------------------------
 
-USAGE = "ufodiff delta all commits:[N] <optional UFO filter>"
+USAGE = "ufodiff [subcommand] [subcommand specific arguments]"
 
 # ------------------------------------------------------------------------------
 # Version String

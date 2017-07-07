@@ -69,7 +69,16 @@ def test_ufodiff_commandline_longversion(capsys):
     out, err = capsys.readouterr()
     assert out.startswith(settings.VERSION)
 
-# TODO: add usage request testing
+
+def test_ufodiff_commandline_longusage(capsys):
+    with pytest.raises(SystemExit):
+        from ufodiff.app import main
+        from ufodiff.app import settings
+        sys.argv = ['ufodiff', '--usage']
+        main()
+
+    out, err = capsys.readouterr()
+    assert out.startswith(settings.USAGE)
 
 
 # ///////////////////////////////////////////////////////

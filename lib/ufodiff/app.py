@@ -41,8 +41,8 @@ def main():
         stdout(settings.USAGE)
         sys.exit(0)
 
-    # DELTA sub-command
-    #  ufodiff delta [all | glyph | nonglyph | version] [commits:number] [UFO file path]
+    # DELTA + DELTAJSON sub-commands
+    #  ufodiff [delta|deltajson] [all | glyph | nonglyph | version] [commits:number] <UFO file path>
     if c.subcmd == "delta" or c.subcmd == "deltajson":
         acceptable_deltacommands = ['all', 'glyph', 'nonglyph']  # used in command line argument validations
 
