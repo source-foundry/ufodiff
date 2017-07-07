@@ -23,10 +23,3 @@ def file_exists(filepath):
         return True
     else:
         return False
-
-
-def read_file_to_string(filepath):
-    f = open(filepath, "r")
-    file_string = f.read()
-    f.close()
-    return file_string
