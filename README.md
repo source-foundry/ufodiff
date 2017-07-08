@@ -108,7 +108,7 @@ JSON data are formatted as follows:
       "25087a1ab",
       "27fdb2e48",
       "6edab459e"
-    ]
+    ],
     "added": [
       "filepath 1",
       "filepath 2",
