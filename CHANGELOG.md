@@ -2,7 +2,10 @@
 
 ### v0.2.1
 
-- added `deltamd` subcommand to support output of Markdown delta file reports
+- added `deltamd` subcommand to support output of Markdown formatted delta file reports
+- added short SHA1 digests for the commit history under analysis
+- Commit SHA1 digests added to `delta` subcommand as header of standard output string
+- Commit SHA1 digests added to `deltajson` subcommand JSON string with key `commits`
 
 
 ### v0.2.0

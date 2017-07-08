@@ -10,8 +10,6 @@ Currently, UFO version 2 is fully supported and UFO version 3 is partially suppo
 
 Unstable development version.  
 
-This application does not currently modify or write to any files in your project.  This could change. Watch the changelog as you upgrade your pip installs.
-
 [Changelog](https://github.com/source-foundry/ufodiff/blob/master/CHANGELOG.md)
 
 ## Install
@@ -52,7 +50,13 @@ $ ufodiff delta all commits:1 > myfont_delta.txt
 
 ### ufodiff Subcommands
 
-<h4><a href=""> delta</a></h4>
+#### Subcommand List
+
+- <a href="#delta">delta</a>
+- <a href="#deltajson">deltajson</a>
+- <a href="#deltamd">deltamd</a>
+
+<h3 id="delta"><a href="">delta</a></h4>
 
 `ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits in text format.  The data are streamed through standard output in a newline delimited fashion with indicators for the type of file change.
 
@@ -62,7 +66,7 @@ The file change indicators include:
 - **[D]** file deleted
 - **[M]** file modified
 
-For JSON formatted data, see the `deltajson` subcommand. 
+For Markdown formatted data, see the `deltamd` command.  For JSON formatted data, see the `deltajson` subcommand.
 
 ```
 Subcommands:
@@ -79,12 +83,12 @@ Increase or decrease the integer value after the `commits:` argument to change t
 Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
 
-<h4><a href=""> deltajson</a></h4>
+<h3 id="deltajson"><a href=""> deltajson</a></h4>
 
 
 `ufo deltajson` generates file modification, addition, and deletion reports over a user specified number of commits in JSON format.  The data are streamed through standard output.
 
-For text formatted data, see the `delta` subcommand. 
+For plain text formatted data, see the `delta` subcommand.  For Markdown formatted data, see the `deltamd` command.
 
 ```
 Subcommands:
@@ -100,6 +104,11 @@ JSON data are formatted as follows:
 
 ```json
 {
+    "commits": [
+      "25087a1ab",
+      "27fdb2e48",
+      "6edab459e"
+    ]
     "added": [
       "filepath 1",
       "filepath 2",
@@ -116,6 +125,27 @@ JSON data are formatted as follows:
       "filepath 3"
     ]
 }
+```
+
+Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
+
+Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
+
+
+<h3 id="deltamd"><a href=""> deltamd</a></h4>
+
+`ufodiff deltamd` generates file modification, addition, and deletion reports over a user specified number of commits in Github flavored Markdown format.  The data are streamed through standard output.
+
+For plain text formatted data, see the `delta` command.  For JSON formatted data, see the `deltajson` command.
+
+```
+Subcommands:
+
+- deltamd       --- HEAD vs. user defined previous commits as Markdown output to standard output stream
+   - all
+
+Example:
+  ufodiff deltamd all commits:3 <optional UFO filter>
 ```
 
 Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
