@@ -25,19 +25,19 @@ class Ufo(object):
 
     # TODO: include information in images and data directories of UFO 3 spec
     def validate_file(self, filepath):
-        if os.path.basename(filepath) in self.acceptable_files or filepath.endswith(".glif"):
+        if os.path.basename(filepath) in self.acceptable_files or filepath[-5:] == ".glif":
             return True
         else:
             return False
 
     def is_nonglyph_file(self, filepath):
-        if filepath.endswith('.plist') or filepath.endswith('.fea'):
+        if filepath[-6:] == ".plist" or filepath[-4:] == ".fea":
             return True
         else:
             return False
 
     def is_glyph_file(self, filepath):
-        if filepath.endswith('.glif'):
+        if filepath[-5:] == ".glif":
             return True
         else:
             return False
