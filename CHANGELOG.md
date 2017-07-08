@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.2.2
+
+- PyPI documentation update
+
 ### v0.2.1
 
 - added `deltamd` subcommand to support output of Markdown formatted delta file reports
