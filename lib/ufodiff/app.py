@@ -48,6 +48,7 @@ def main():
         acceptable_deltacommands = ['all', 'glyph', 'nonglyph']  # used in command line argument validations
 
         # Command line argument validations
+        # TODO: add test that commits integer requested by user is < number of total commits in the repository
         if c.argc < 3:  # expected argument number
             stderr("[ufodiff] ERROR: Too few arguments to the ufodiff delta command.")
             sys.exit(1)

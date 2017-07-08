@@ -37,10 +37,13 @@ Subcommands:
    - all
 - deltajson     --- json output to standard output stream
    - all
+- deltamd       --- Markdown output to standard output stream
+   - all
   
 Examples:
   ufodiff delta all commits:3 <optional UFO filter>
   ufodiff deltajson all commits:3 <optional UFO filter>
+  ufodiff deltamd all commits:3 <optional UFO filter>
   
 Increase or decrease integer value after the `commit:` argument to modify evaluation to that number of previous commits in the git repository.
 

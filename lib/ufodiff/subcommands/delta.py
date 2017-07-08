@@ -7,11 +7,13 @@
 # ====================================================
 
 import os
+import sys
 import json
 
 from git import Repo
 
 from ufodiff.utilities.ufo import Ufo
+from ufodiff.settings import major_version, minor_version, patch_version
 
 
 class Delta(object):
@@ -27,6 +29,7 @@ class Delta(object):
         self.ufo = Ufo()                               # Ufo class used for UFO source validations
         self.delta_fp_dict = DeltaFilepathDict(ufo_directory_list)  # stores GitPython diffobj.a_rawpath values
 
+        self.commit_sha1_list = []
         self.all_ufo_diffobj_list = []
         self.added_ufo_diffobj_list = []
         self.modified_ufo_diffobj_list = []
@@ -40,7 +43,10 @@ class Delta(object):
     def _define_and_validate_ufo_diff_lists(self):
         commit_number_string = "HEAD~" + self.commit_number
         repo = Repo(self.gitrepo_path)
+        git = repo.git
         hcommit = repo.head.commit
+
+        # add file changes to the class property lists
         for diff_file in hcommit.diff(commit_number_string):
             self.all_ufo_diffobj_list.append(diff_file)
 
@@ -54,8 +60,15 @@ class Delta(object):
             # if diff_file.renamed is True:
             #     self.renamed_diffobj_list.append(diff_file)
 
+        # add the commit SHA1 shortcodes for commits requested by user to the class property list
+        sha1_num_commits = "-" + self.commit_number
+        sha1_args = [sha1_num_commits, '--pretty=%h']
+        sha1_string = git.log(sha1_args)
+        self.commit_sha1_list = sha1_string.split(os.linesep)
+
     # PUBLIC METHODS
     def get_all_ufo_delta_fp_dict(self):
+        self.delta_fp_dict.add_commit_sha1(self.commit_sha1_list)
         self.delta_fp_dict.add_added_filepaths(self.added_ufo_diffobj_list)
         self.delta_fp_dict.add_modified_filepaths(self.modified_ufo_diffobj_list)
         self.delta_fp_dict.add_deleted_filepaths(self.deleted_ufo_diffobj_list)
@@ -117,6 +130,9 @@ class DeltaFilepathDict(object):
 
         self.delta_dict['deleted'] = deleted_filepath_list
 
+    def add_commit_sha1(self, sha1_list):
+        self.delta_dict['commits'] = sha1_list
+
 
 def get_delta_string(delta_fp_dict_obj, write_format):
     """
@@ -130,6 +146,13 @@ def get_delta_string(delta_fp_dict_obj, write_format):
         textstring = ""
 
         delta_fp_dict = delta_fp_dict_obj.delta_dict
+
+        # Write SHA1 commits under examination
+        if len(delta_fp_dict['commits']) > 0:
+            textstring += os.linesep + "Commit history SHA1 for this analysis:" + os.linesep
+            for sha1_commit in delta_fp_dict['commits']:
+                textstring += " " + sha1_commit + os.linesep
+            textstring += os.linesep
 
         if len(delta_fp_dict['added']) > 0:
             for added_file in delta_fp_dict['added']:
@@ -145,7 +168,6 @@ def get_delta_string(delta_fp_dict_obj, write_format):
             for modified_file in delta_fp_dict['modified']:
                 mod_append_string = "[M]:" + modified_file + os.linesep
                 textstring += mod_append_string
-
         # return the text string
         return textstring
     elif write_format == 'json':
@@ -154,6 +176,13 @@ def get_delta_string(delta_fp_dict_obj, write_format):
         markdown_string = ""
 
         delta_fp_dict = delta_fp_dict_obj.delta_dict
+
+        # SHA1 shortcode for included commits block
+        if len(delta_fp_dict['commits']) > 0:
+            markdown_string += "## Commit history SHA1 for this analysis:" + os.linesep
+            for sha1_commit in delta_fp_dict['commits']:
+                markdown_string += "- `" + sha1_commit + "`" + os.linesep
+            markdown_string += os.linesep
 
         # Added files block
         markdown_string += "## Added Files" + os.linesep
@@ -180,6 +209,8 @@ def get_delta_string(delta_fp_dict_obj, write_format):
         else:
             markdown_string += "- None" + os.linesep
 
+        markdown_string += os.linesep + os.linesep + '---' + os.linesep + "[ufodiff](https://github.com/source-foundry/ufodiff) v" + major_version + "." + minor_version + "." + patch_version
+        markdown_string += " | [Report Issue](https://github.com/source-foundry/ufodiff/issues)"
         return markdown_string
 
 
