@@ -56,7 +56,7 @@ $ ufodiff delta all commits:1 > myfont_delta.txt
 - <a href="#deltajson">deltajson</a>
 - <a href="#deltamd">deltamd</a>
 
-<h3 id="delta"><a href="">delta</a></h4>
+<h3 id="delta"><a href="">delta</a></h3>
 
 `ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits in text format.  The data are streamed through standard output in a newline delimited fashion with indicators for the type of file change.
 
@@ -83,7 +83,7 @@ Increase or decrease the integer value after the `commits:` argument to change t
 Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
 
-<h3 id="deltajson"><a href=""> deltajson</a></h4>
+<h3 id="deltajson"><a href=""> deltajson</a></h3>
 
 
 `ufo deltajson` generates file modification, addition, and deletion reports over a user specified number of commits in JSON format.  The data are streamed through standard output.
@@ -132,7 +132,7 @@ Increase or decrease the integer value after the `commits:` argument to change t
 Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
 
-<h3 id="deltamd"><a href=""> deltamd</a></h4>
+<h3 id="deltamd"><a href=""> deltamd</a></h3>
 
 `ufodiff deltamd` generates file modification, addition, and deletion reports over a user specified number of commits in Github flavored Markdown format.  The data are streamed through standard output.
 
