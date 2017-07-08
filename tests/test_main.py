@@ -97,3 +97,12 @@ def test_ufodiff_commandline_missingargs(capsys):
     out, err = capsys.readouterr()
     assert err.startswith("[ufodiff] ERROR: Please include the appropriate arguments with your command.")
 
+
+
+
+# Test for exit code in pytest:
+
+# with pytest.raises(SystemExit) as pytest_wrapped_e:
+#     somefunction()
+# assert pytest_wrapped_e.type == SystemExit
+# assert pytest_wrapped_e.value.code == 0

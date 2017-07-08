@@ -7,7 +7,6 @@
 # ====================================================
 
 import os
-import sys
 import json
 
 from git import Repo
@@ -20,7 +19,11 @@ class Delta(object):
     """
     Delta class stores delta subcommand data and provides methods to support creation of
     delta / deltajson / deltamd reports.  Uses DeltaFilepathDict class to filter diff file list
-    by user specified UFO source directory filter and by added/deleted/modified status of the files
+    by user specified UFO source directory filter and sort by added/deleted/modified status of the files
+
+    :param gitrepo_path: absolute file path to the root level of the git repository for analysis (automatically detected in ufodiff.app.py)
+    :param ufo_directory_list: list of one or more UFO directories for filter of results (user specified on CL)
+    :param commit_number: the number of requested in the git history to analyze (user specified on CL)
     """
     def __init__(self, gitrepo_path, ufo_directory_list, commit_number):
         self.gitrepo_path = gitrepo_path               # path to root of git repository
@@ -46,25 +49,31 @@ class Delta(object):
         git = repo.git
         hcommit = repo.head.commit
 
-        # add file changes to the class property lists
+        # add file changes to the class attribute lists
         for diff_file in hcommit.diff(commit_number_string):
             self.all_ufo_diffobj_list.append(diff_file)
+            self._validate_ufo_and_load_lists(diff_file)
 
-            # test for valid UFO files and add the diff object from gitpython (git import) to the list
-            if diff_file.new_file is True and self.ufo.validate_file(diff_file.a_rawpath) is True:
-                self.added_ufo_diffobj_list.append(diff_file)
-            if diff_file.change_type == "M" and self.ufo.validate_file(diff_file.a_rawpath) is True:
-                self.modified_ufo_diffobj_list.append(diff_file)
-            if diff_file.deleted_file is True and self.ufo.validate_file(diff_file.a_rawpath) is True:
-                self.deleted_ufo_diffobj_list.append(diff_file)
-            # if diff_file.renamed is True:
-            #     self.renamed_diffobj_list.append(diff_file)
+        # add commit SHA1 values to class attribute lists
+        self._add_commit_sha1_to_lists(git)
 
+    def _add_commit_sha1_to_lists(self, git):
         # add the commit SHA1 shortcodes for commits requested by user to the class property list
         sha1_num_commits = "-" + self.commit_number
         sha1_args = [sha1_num_commits, '--pretty=%h']
-        sha1_string = git.log(sha1_args)
+        sha1_string = git.log(sha1_args)   # git log -[N] --pretty=%h  ===> newline delimited list of SHA1 for N commits
         self.commit_sha1_list = sha1_string.split(os.linesep)
+
+    def _validate_ufo_and_load_lists(self, diff_file):
+        # test for valid UFO files and add the diff object from gitpython (git import) to the list
+        if diff_file.new_file is True and self.ufo.validate_file(diff_file.a_rawpath) is True:      # added files
+            self.added_ufo_diffobj_list.append(diff_file)
+        if diff_file.change_type == "M" and self.ufo.validate_file(diff_file.a_rawpath) is True:    # modified files
+            self.modified_ufo_diffobj_list.append(diff_file)
+        if diff_file.deleted_file is True and self.ufo.validate_file(diff_file.a_rawpath) is True:  # deleted files
+            self.deleted_ufo_diffobj_list.append(diff_file)
+            # if diff_file.renamed is True:
+            #     self.renamed_diffobj_list.append(diff_file)
 
     # PUBLIC METHODS
     def get_all_ufo_delta_fp_dict(self):
