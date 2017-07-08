@@ -84,12 +84,12 @@ class Delta(object):
         return self.delta_fp_dict
 
     # TODO: implement glyph only data
-    def get_glyph_delta_fp_dict(self):
-        pass
+    # def get_glyph_delta_fp_dict(self):
+    #     pass
 
     # TODO: implement nonglyph only data
-    def get_nonglyph_delta_fp_dict(self):
-        pass
+    # def get_nonglyph_delta_fp_dict(self):
+    #     pass
 
 
 class DeltaFilepathDict(object):
@@ -97,47 +97,30 @@ class DeltaFilepathDict(object):
         self.delta_dict = {}
         self.ufo_directory_list = ufo_directory_list
 
-    def add_added_filepaths(self, diffobj_list):
-        added_filepath_list = []
-
+    def _filter_and_load_lists(self, diffobj_list):
+        the_filepath_list = []
         if len(self.ufo_directory_list) == 0:  # no user defined UFO source filters, include all UFO source
             for a_diffobj in diffobj_list:
-                added_filepath_list.append(a_diffobj.a_rawpath)
+                the_filepath_list.append(a_diffobj.a_rawpath)
         else:
             for a_diffobj in diffobj_list:
                 for ufo_directory_filter_path in self.ufo_directory_list:  # filter for user defined UFO source
                     if ufo_directory_filter_path in a_diffobj.a_rawpath:
-                        added_filepath_list.append(a_diffobj.a_rawpath)
+                        the_filepath_list.append(a_diffobj.a_rawpath)
 
-        self.delta_dict['added'] = added_filepath_list
+        return the_filepath_list
+
+    def add_added_filepaths(self, diffobj_list):
+
+        self.delta_dict['added'] = self._filter_and_load_lists(diffobj_list)
 
     def add_modified_filepaths(self, diffobj_list):
-        modified_filepath_list = []
 
-        if len(self.ufo_directory_list) == 0:  # no user defined UFO source filters, include all UFO source paths
-            for a_diffobj in diffobj_list:
-                modified_filepath_list.append(a_diffobj.a_rawpath)
-        else:
-            for a_diffobj in diffobj_list:
-                for ufo_directory_filter_path in self.ufo_directory_list:   # filter for user defined UFO source
-                    if ufo_directory_filter_path in a_diffobj.a_rawpath:
-                        modified_filepath_list.append(a_diffobj.a_rawpath)
-
-        self.delta_dict['modified'] = modified_filepath_list
+        self.delta_dict['modified'] = self._filter_and_load_lists(diffobj_list)
 
     def add_deleted_filepaths(self, diffobj_list):
-        deleted_filepath_list = []
 
-        if len(self.ufo_directory_list) == 0:  # no user defined UFO source filters, include all UFO source paths
-            for a_diffobj in diffobj_list:
-                deleted_filepath_list.append(a_diffobj.a_rawpath)
-        else:
-            for a_diffobj in diffobj_list:
-                for ufo_directory_filter_path in self.ufo_directory_list:  # filter for user defined UFO source
-                    if ufo_directory_filter_path in a_diffobj.a_rawpath:
-                        deleted_filepath_list.append(a_diffobj.a_rawpath)
-
-        self.delta_dict['deleted'] = deleted_filepath_list
+        self.delta_dict['deleted'] = self._filter_and_load_lists(diffobj_list)
 
     def add_commit_sha1(self, sha1_list):
         self.delta_dict['commits'] = sha1_list

@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.2.4
+
+- refactored DeltaFilePathDict class
+
 ### v0.2.3
 
 - bugfix for Python 3 string comparison issue in ufodiff.utilities.ufo module
