@@ -62,7 +62,7 @@ class Delta(object):
         sha1_num_commits = "-" + self.commit_number
         sha1_args = [sha1_num_commits, '--pretty=%h']
         sha1_string = git.log(sha1_args)   # git log -[N] --pretty=%h  ===> newline delimited list of SHA1 for N commits
-        self.commit_sha1_list = sha1_string.split(os.linesep)
+        self.commit_sha1_list = sha1_string.split("\n")  # do not modify to os.linesep, Win fails tests with this change
 
     def _validate_ufo_and_load_lists(self, diff_file):
         # test for valid UFO files and add the diff object from gitpython (git import) to the list

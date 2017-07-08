@@ -243,6 +243,16 @@ def test_ufodiff_dfpd_add_modified_fp_method():
     assert dfpd3.delta_dict['modified'][1] == os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
 
 
+def test_ufodiff_dfpd_add_commit_sha1_method():
+    sha1_list = ['1a3e2f', '2c2eff']
+    dfpd = DeltaFilepathDict([])
+    dfpd.add_commit_sha1(sha1_list)
+
+    assert len(dfpd.delta_dict['commits']) == 2
+    for sha1 in sha1_list:
+        assert (sha1 in dfpd.delta_dict['commits']) is True
+
+
 # ///////////////////////////////////////////////////////
 #
 #  get_delta_string function tests
