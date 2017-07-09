@@ -2,11 +2,12 @@
 
 ### v0.2.4
 
+- bug fix for commit SHA1 digest parsing on Windows
 - refactored DeltaFilePathDict class
 
 ### v0.2.3
 
-- bugfix for Python 3 string comparison issue in ufodiff.utilities.ufo module
+- bug fix for Python 3 string comparison issue in ufodiff.utilities.ufo module
 
 ### v0.2.2
 
