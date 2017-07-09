@@ -270,6 +270,36 @@ class MockDeltaDictObj(object):
         }
 
 
+class MockDeltaDictObj_MissingAdded(object):
+    def __init__(self):
+        self.delta_dict = {
+            'commits': ['ff418e4d', '73fee88'],
+            'added': [],
+            'deleted': ['Test-Regular.ufo/features.fea'],
+            'modified': ['Test-Regular.ufo/glyphs/A.glif', 'Test-Regular.ufo/glyphs/B.glif']
+        }
+
+
+class MockDeltaDictObj_MissingDeleted(object):
+    def __init__(self):
+        self.delta_dict = {
+            'commits': ['ff418e4d', '73fee88'],
+            'added': ['Test-Regular.ufo/fontinfo.plist', 'Test-Regular.ufo/metainfo.plist'],
+            'deleted': [],
+            'modified': ['Test-Regular.ufo/glyphs/A.glif', 'Test-Regular.ufo/glyphs/B.glif']
+        }
+
+
+class MockDeltaDictObj_MissingModified(object):
+    def __init__(self):
+        self.delta_dict = {
+            'commits': ['ff418e4d', '73fee88'],
+            'added': ['Test-Regular.ufo/fontinfo.plist', 'Test-Regular.ufo/metainfo.plist'],
+            'deleted': ['Test-Regular.ufo/features.fea'],
+            'modified': []
+        }
+
+
 def test_ufodiff_getdeltastring_text():
     mddo = MockDeltaDictObj()
     test_string = get_delta_string(mddo, write_format='text')
@@ -304,3 +334,37 @@ def test_ufodiff_getdeltastring_md():
     assert 'Test-Regular.ufo/metainfo.plist' in test_string
     assert 'Test-Regular.ufo/glyphs/A.glif' in test_string
     assert 'Test-Regular.ufo/glyphs/B.glif' in test_string
+    assert 'Test-Regular.ufo/features.fea' in test_string
+
+
+def test_ufodiff_getdeltastring_md_missing_added():
+    mddo = MockDeltaDictObj_MissingAdded()
+    test_string = get_delta_string(mddo, write_format='markdown')
+    assert 'ff418e4d' in test_string
+    assert '73fee88' in test_string
+    assert 'Test-Regular.ufo/glyphs/A.glif' in test_string
+    assert 'Test-Regular.ufo/glyphs/B.glif' in test_string
+    assert 'None' in test_string
+
+
+def test_ufodiff_getdeltastring_md_missing_deleted():
+    mddo = MockDeltaDictObj_MissingDeleted()
+    test_string = get_delta_string(mddo, write_format='markdown')
+    assert 'ff418e4d' in test_string
+    assert '73fee88' in test_string
+    assert 'Test-Regular.ufo/fontinfo.plist' in test_string
+    assert 'Test-Regular.ufo/metainfo.plist' in test_string
+    assert 'Test-Regular.ufo/glyphs/A.glif' in test_string
+    assert 'Test-Regular.ufo/glyphs/B.glif' in test_string
+    assert 'None' in test_string
+
+
+def test_ufodiff_getdeltastring_md_missing_modified():
+    mddo = MockDeltaDictObj_MissingModified()
+    test_string = get_delta_string(mddo, write_format='markdown')
+    assert 'ff418e4d' in test_string
+    assert '73fee88' in test_string
+    assert 'Test-Regular.ufo/fontinfo.plist' in test_string
+    assert 'Test-Regular.ufo/metainfo.plist' in test_string
+    assert 'Test-Regular.ufo/features.fea' in test_string
+    assert 'None' in test_string

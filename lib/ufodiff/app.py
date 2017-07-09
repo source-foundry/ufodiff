@@ -103,9 +103,7 @@ def main():
                     sys.exit(1)
             except Exception as e:
                 stderr("[ufodiff] ERROR: Unable to identify the root of your git repository. Please try again from "
-                       "the root of your repository")
-                stderr(" ")
-                stderr(e)  # display exception if exception raised with this attempt to define path
+                       "the root of your repository. " + str(e))
                 sys.exit(1)
 
         # Variable validations
@@ -130,11 +128,11 @@ def main():
             elif c.subcmd == "deltamd":
                 stdout_string = get_delta_string(filepath_dict, write_format='markdown')
             sys.stdout.write(stdout_string)
-        elif c.arg1 == "glyph":
-            pass  # TODO: implement glyph only command handling with 'ufo delta glyph'
-        elif c.arg1 == "nonglyph":
-            pass  # TODO: implement nonglyph only command handling with 'ufo delta nonglyph'
+        # elif c.arg1 == "glyph":
+        #     pass  # TODO: implement glyph only command handling with 'ufo delta glyph'
+        # elif c.arg1 == "nonglyph":
+        #     pass  # TODO: implement nonglyph only command handling with 'ufo delta nonglyph'
 
-
-if __name__ == '__main__':
-    main()
+        sys.exit(0)
+# if __name__ == '__main__':
+#     main()
