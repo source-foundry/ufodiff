@@ -50,7 +50,7 @@ class Delta(object):
         hcommit = repo.head.commit
 
         # add file changes to the class attribute lists
-        for diff_file in hcommit.diff(commit_number_string):
+        for diff_file in hcommit.diff(commit_number_string):  # TODO: add support for branch v branch comparisons
             self.all_ufo_diffobj_list.append(diff_file)
             self._validate_ufo_and_load_lists(diff_file)
 

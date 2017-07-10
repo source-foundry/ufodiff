@@ -30,6 +30,16 @@ class Ufo(object):
         else:
             return False
 
+    def get_valid_file_filterlist_for_diff(self):
+        filter_list = []
+        # add valid non-glyph file filters
+        for a_file in self.acceptable_files:
+            filter_string = "*" + a_file
+            filter_list.append(filter_string)
+        # add glyph file filters
+        filter_list.append('*.glif')
+        return filter_list
+
     def is_nonglyph_file(self, filepath):
         if filepath[-6:] == ".plist" or filepath[-4:] == ".fea":
             return True

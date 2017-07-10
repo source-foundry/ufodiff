@@ -19,6 +19,7 @@ from standardstreams import stdout, stderr
 
 from ufodiff import settings  # defines application version, help string, version string, usage string
 from ufodiff.subcommands.delta import Delta, get_delta_string
+from ufodiff.subcommands.diff import Diff
 
 from ufodiff.utilities import dir_exists
 
@@ -73,39 +74,8 @@ def main():
         commits_list = c.arg2.split(':')
         commits_number = commits_list[1]
 
-        # define root of git repository
-        unverified_gitroot_path = os.path.abspath('.')
-
-        # define Git repository root path in variable
-        # check working directory for git repository root
-        if dir_exists(os.path.join(unverified_gitroot_path, '.git')):
-            verified_gitroot_path = os.path.join(unverified_gitroot_path, '.git')
-        else:
-            # recursive search for the root of the git repository x 3 levels if not found in working directory
-            try:
-                one_level_up = os.path.abspath(os.path.join(unverified_gitroot_path, os.pardir))
-                two_levels_up = os.path.dirname(one_level_up)
-                three_levels_up = os.path.dirname(two_levels_up)
-
-                one_level_up_path = os.path.join(one_level_up, '.git')
-                two_levels_up_path = os.path.join(two_levels_up, '.git')
-                three_levels_up_path = os.path.join(three_levels_up, '.git')
-
-                if dir_exists(one_level_up_path):  # check one directory level up
-                    verified_gitroot_path = os.path.dirname(one_level_up_path)
-                elif dir_exists(two_levels_up_path):  # check two directory levels up
-                    verified_gitroot_path = os.path.dirname(two_levels_up_path)
-                elif dir_exists(three_levels_up_path):  # check three directory levels up
-                    verified_gitroot_path = os.path.dirname(three_levels_up_path)
-                else:
-                    stderr("[ufodiff] ERROR: Unable to identify the root of your git repository. Please try again from "
-                           "the root of your repository")
-                    sys.exit(1)
-            except Exception as e:
-                stderr("[ufodiff] ERROR: Unable to identify the root of your git repository. Please try again from "
-                       "the root of your repository. " + str(e))
-                sys.exit(1)
-
+        # recursive search for the root of the git repository x 3 levels if not found in working directory
+        verified_gitroot_path = get_git_root_path()
         # Variable validations
         if not commits_number.isdigit():  # validate that user entered number of commits for diff is an integer
             stderr("[ufodiff] ERROR: The value following the colon in the 'commits:[number]' argument is not a valid "
@@ -132,7 +102,70 @@ def main():
         #     pass  # TODO: implement glyph only command handling with 'ufo delta glyph'
         # elif c.arg1 == "nonglyph":
         #     pass  # TODO: implement nonglyph only command handling with 'ufo delta nonglyph'
+    # DIFF SUBCOMMAND
+    elif c.subcmd == "diff":
+        # TODO: add argument validations
+        try:
+            verified_gitroot_path = get_git_root_path()
+            diff = Diff(verified_gitroot_path, color_diff=True)
+            for diff_string in diff.get_diff_string_generator(c.arg1):
+                stdout(diff_string)
+        except Exception as e:
+            stderr("[ufodiff] ERROR: Unable to excecute your request. Error returned as: " + os.linesep + str(e))
+            sys.exit(1)
+    # DIFFNC SUBCOMMAND
+    elif c.subcmd == "diffnc":
+        # TODO: add argument validations
+        try:
+            verified_gitroot_path = get_git_root_path()
+            diff = Diff(verified_gitroot_path, color_diff=False)
+            for diff_string in diff.get_diff_string_generator(c.arg1):
+                stdout(diff_string)
+        except Exception as e:
+            stderr("[ufodiff] ERROR: Unable to excecute your request. Error returned as: " + os.linesep + str(e))
+            sys.exit(1)
+    # # DIFF-FILE SUBCOMMAND
+    # elif c.subcmd == "diff-filter":  # user specified file/directory filters on the diff performed
+    #     pass
+    # # DIFF-FILENC SUBCOMMAND
+    # elif c.subcmd == "diff-filternc":
+    #     pass
+    sys.exit(0)
 
-        sys.exit(0)
+
+def get_git_root_path():
+    try:
+        # begin by defining current working directory as root of git repository
+        unverified_gitroot_path = os.path.abspath('.')
+
+        # check to see if this assumption is correct
+        if dir_exists(os.path.join(unverified_gitroot_path, '.git')):
+            verified_gitroot_path = os.path.join(unverified_gitroot_path, '.git')
+        else:  # if not, recursive search up to three directories above for the git repo root
+            one_level_up = os.path.abspath(os.path.join(unverified_gitroot_path, os.pardir))
+            two_levels_up = os.path.dirname(one_level_up)
+            three_levels_up = os.path.dirname(two_levels_up)
+
+            one_level_up_path = os.path.join(one_level_up, '.git')
+            two_levels_up_path = os.path.join(two_levels_up, '.git')
+            three_levels_up_path = os.path.join(three_levels_up, '.git')
+
+            if dir_exists(one_level_up_path):  # check one directory level up
+                verified_gitroot_path = os.path.dirname(one_level_up_path)
+            elif dir_exists(two_levels_up_path):  # check two directory levels up
+                verified_gitroot_path = os.path.dirname(two_levels_up_path)
+            elif dir_exists(three_levels_up_path):  # check three directory levels up
+                verified_gitroot_path = os.path.dirname(three_levels_up_path)
+            else:
+                stderr("[ufodiff] ERROR: Unable to identify the root of your git repository. Please try again from "
+                       "the root of your repository")
+                sys.exit(1)
+    except Exception as e:
+        stderr("[ufodiff] ERROR: Unable to identify the root of your git repository. Please try again from "
+               "the root of your repository. " + str(e))
+        sys.exit(1)
+
+    return verified_gitroot_path
+
 # if __name__ == '__main__':
 #     main()

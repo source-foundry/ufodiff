@@ -92,3 +92,15 @@ def test_ufodiff_ufo_version_true():
 def test_ufodiff_ufo_version_false():
     ufo = Ufo()
     assert ufo.is_ufo_version_file("fontinfo.plist") is False
+
+
+# test UFO file filters for diff and diffnc commands
+def test_ufodiff_ufo_diff_filters():
+    ufo = Ufo()
+    filter_test_list = ufo.get_valid_file_filterlist_for_diff()
+    # test for each of the nonglyph files
+    for acceptable_file in ufo.acceptable_files:
+        filter_file = "*" + acceptable_file
+        assert filter_file in filter_test_list
+    # test for inclusion of glyph files
+    assert '*.glif' in filter_test_list
