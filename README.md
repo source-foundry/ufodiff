@@ -1,6 +1,6 @@
 <img src="https://github.com/source-foundry/ufodiff/blob/images/images/ufodiff-logo.png?raw=true">
 
-## ufodiff [![Build Status](https://travis-ci.org/source-foundry/ufodiff.svg?branch=master)](https://travis-ci.org/source-foundry/ufodiff) [![Build status](https://ci.appveyor.com/api/projects/status/o2vdn1uf7uxau3o7/branch/master?svg=true)](https://ci.appveyor.com/project/chrissimpkins/ufodiff/branch/master) [![codecov](https://codecov.io/gh/source-foundry/ufodiff/branch/master/graph/badge.svg)](https://codecov.io/gh/source-foundry/ufodiff)
+## [![Build Status](https://travis-ci.org/source-foundry/ufodiff.svg?branch=master)](https://travis-ci.org/source-foundry/ufodiff) [![Build status](https://ci.appveyor.com/api/projects/status/o2vdn1uf7uxau3o7/branch/master?svg=true)](https://ci.appveyor.com/project/chrissimpkins/ufodiff/branch/master) [![codecov](https://codecov.io/gh/source-foundry/ufodiff/branch/master/graph/badge.svg)](https://codecov.io/gh/source-foundry/ufodiff)
 
 ufodiff is a command line UFO source file modification and diff tool for collaborative typeface development projects.
 
