@@ -4,6 +4,9 @@
 import os
 import sys
 import pytest
+import mock
+
+from ufodiff.app import get_git_root_path
 
 # ///////////////////////////////////////////////////////
 #
@@ -30,27 +33,31 @@ def test_pytest_capsys(capsys):
 # ///////////////////////////////////////////////////////
 
 def test_ufodiff_commandline_shorthelp(capsys):
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
         from ufodiff.app import main
         sys.argv = ['ufodiff', '-h']
         main()
 
     out, err = capsys.readouterr()
     assert out.startswith("====================================================") is True
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
 
 
 def test_ufodiff_commandline_longhelp(capsys):
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
         from ufodiff.app import main
         sys.argv = ['ufodiff', '--help']
         main()
 
     out, err = capsys.readouterr()
     assert out.startswith("====================================================") is True
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
 
 
 def test_ufodiff_commandline_shortversion(capsys):
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
         from ufodiff.app import main
         from ufodiff.app import settings
         sys.argv = ['ufodiff', '-v']
@@ -58,10 +65,12 @@ def test_ufodiff_commandline_shortversion(capsys):
 
     out, err = capsys.readouterr()
     assert out.startswith(settings.VERSION)
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
 
 
 def test_ufodiff_commandline_longversion(capsys):
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
         from ufodiff.app import main
         from ufodiff.app import settings
         sys.argv = ['ufodiff', '--version']
@@ -69,10 +78,12 @@ def test_ufodiff_commandline_longversion(capsys):
 
     out, err = capsys.readouterr()
     assert out.startswith(settings.VERSION)
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
 
 
 def test_ufodiff_commandline_longusage(capsys):
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
         from ufodiff.app import main
         from ufodiff.app import settings
         sys.argv = ['ufodiff', '--usage']
@@ -80,23 +91,32 @@ def test_ufodiff_commandline_longusage(capsys):
 
     out, err = capsys.readouterr()
     assert out.startswith(settings.USAGE)
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
 
 
-# ///////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////
 #
-# Standard output tests for argument validations
+# Standard output tests for non-command specific argument validations
 #
-# ///////////////////////////////////////////////////////
-
+# ///////////////////////////////////////////////////////////////////
 
 def test_ufodiff_commandline_missingargs(capsys):
-    with pytest.raises(SystemExit):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
         from ufodiff.app import main
         sys.argv = ['ufodiff']
         main()
 
     out, err = capsys.readouterr()
-    assert err.startswith("[ufodiff] ERROR: Please include the appropriate arguments with your command.")
+    assert err.startswith("[ufodiff] ERROR: Please include the appropriate arguments")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+# ////////////////////////////////////////////////////////////
+#
+# Standard output tests for delta command argument validations
+#
+# ////////////////////////////////////////////////////////////
 
 
 def test_ufodiff_commandline_delta_missingargs(capsys):
@@ -106,7 +126,8 @@ def test_ufodiff_commandline_delta_missingargs(capsys):
         main()
 
     out, err = capsys.readouterr()
-    assert err.startswith("[ufodiff] ERROR: Too few arguments to the ufodiff delta command.")
+    assert err.startswith("[ufodiff] ERROR: ")
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
 
 
@@ -118,6 +139,7 @@ def test_ufodiff_commandline_delta_unacceptable_subsub(capsys):
 
     out, err = capsys.readouterr()
     assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
 
 
@@ -129,6 +151,7 @@ def test_ufodiff_commandline_delta_missing_commits_arg(capsys):
 
     out, err = capsys.readouterr()
     assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
 
 
@@ -140,6 +163,7 @@ def test_ufodiff_commandline_delta_missing_commits_number(capsys):
 
     out, err = capsys.readouterr()
     assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
 
 
@@ -151,6 +175,7 @@ def test_ufodiff_commandline_delta_commits_number_notdigit(capsys):
 
     out, err = capsys.readouterr()
     assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
 
 
@@ -161,6 +186,7 @@ def test_ufodiff_commandline_delta_commits_number_with_ufo_filter(capsys):
         main()
 
     out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 0
 
 
@@ -174,6 +200,7 @@ def test_ufodiff_commandline_delta_git_root_check_one_level_below(capsys):
 
     out, err = capsys.readouterr()
     os.chdir(the_cwd)
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 0
 
 
@@ -187,6 +214,7 @@ def test_ufodiff_commandline_delta_git_root_check_two_levels_below(capsys):
 
     out, err = capsys.readouterr()
     os.chdir(the_cwd)
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 0
 
 
@@ -200,6 +228,7 @@ def test_ufodiff_commandline_delta_git_root_check_three_levels_below(capsys):
 
     out, err = capsys.readouterr()
     os.chdir(the_cwd)
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 0
 
 
@@ -214,6 +243,7 @@ def test_ufodiff_commandline_delta_git_root_check_four_levels_below(capsys):
 
     out, err = capsys.readouterr()
     os.chdir(the_cwd)
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
 
 
@@ -225,6 +255,7 @@ def test_ufodiff_commandline_delta_commits_number_is_zero(capsys):
 
     out, err = capsys.readouterr()
     assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
 
 
@@ -236,8 +267,11 @@ def test_ufodiff_commandline_delta_commits_number_is_lessthan_zero(capsys):
 
     out, err = capsys.readouterr()
     assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
 
+
+## SUCCESS COMMANDS FOR DELTAJSON and DELTAMD
 
 def test_ufodiff_commandline_deltajson_exit_success(capsys):
     with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -246,6 +280,7 @@ def test_ufodiff_commandline_deltajson_exit_success(capsys):
         main()
 
     out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 0
 
 
@@ -256,11 +291,190 @@ def test_ufodiff_commandline_deltamd_exit_success(capsys):
         main()
 
     out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 0
 
-# Test for exit code in pytest:
 
-# with pytest.raises(SystemExit) as pytest_wrapped_e:
-#     somefunction()
-# assert pytest_wrapped_e.type == SystemExit
-# assert pytest_wrapped_e.value.code == 0
+# ////////////////////////////////////////////////////////////
+#
+# Standard output tests for diff + diffnc command argument validations
+#
+# ////////////////////////////////////////////////////////////
+
+def test_ufodiff_commandline_diff_missingargs(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diff']
+        main()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR: ")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
+def test_ufodiff_commandline_diffnc_missingargs(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diffnc']
+        main()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR: ")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
+def test_ufodiff_commandline_diff_missing_commits(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diff', 'commits:']
+        main()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
+def test_ufodiff_commandline_diffnc_missing_commits(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diffnc', 'commits:']
+        main()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
+def test_ufodiff_commandline_diff_missing_branch(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diff', 'branch:']
+        main()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
+def test_ufodiff_commandline_diffnc_missing_branch(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diffnc', 'branch:']
+        main()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
+def test_ufodiff_commandline_diff_success_commits_arg(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diff', 'commits:1']
+        main()
+
+    out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+
+
+def test_ufodiff_commandline_diffnc_success_commits_arg(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diffnc', 'commits:1']
+        main()
+
+    out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+
+
+def test_ufodiff_commandline_diff_success_branch_arg(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diff', 'branch:test']
+        main()
+
+    out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+
+
+def test_ufodiff_commandline_diffnc_success_branch_arg(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diffnc', 'branch:test']
+        main()
+
+    out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+
+
+def test_ufodiff_commandline_diff_success_git_arg(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diff', 'HEAD~1']
+        main()
+
+    out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+
+
+def test_ufodiff_commandline_diffnc_success_git_arg(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diffnc', 'HEAD~1']
+        main()
+
+    out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+
+
+# raise exceptions in underlying GitPython (git import) library and demonstrate catch them
+
+def test_ufodiff_commandline_diff_exception_git_request(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diff', 'bogus']
+        main()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR: ")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
+def test_ufodiff_commandline_diffnc_exception_git_request(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diffnc', 'bogus']
+        main()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR: ")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
+# raise exception in git root path handling
+def test_ufodiff_commandline_git_repo_root_exception(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        with mock.patch('os.path.join') as opj:
+            opj.side_effect = OSError()  # mock an exception from os.path.join inside the function
+            get_git_root_path()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
