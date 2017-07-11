@@ -59,7 +59,7 @@ For the last five commits:
 $ ufodiff delta all commits:5
 ```
 
-For the last five commits, only from the Test-Regular.ufo source (note: not a filepath to source, only include UFO directory name):
+For the last five commits, only from the Test-Regular.ufo source directory (note: not a filepath to source, only include UFO directory name):
 
 ```
 $ ufodiff delta all commits:5 Test-Regular.ufo
@@ -79,7 +79,7 @@ For the last five commits in current branch:
 $ ufodiff deltamd all commits:5
 ```
 
-For the last five commits in current branch, only from the Test-Regular.ufo source (note: not a filepath to source, only include UFO directory name):
+For the last five commits in current branch, only from the Test-Regular.ufo source directory (note: not a filepath to source, only include UFO directory name):
 
 ```
 $ ufodiff deltamd all commits:5 Test-Regular.ufo
@@ -99,7 +99,7 @@ For the last five commits in current branch:
 $ ufodiff deltajson all commits:5
 ```
 
-For the last five commits in current branch, only from the Test-Regular.ufo source (note: not a filepath to source, only include UFO directory name):
+For the last five commits in current branch, only from the Test-Regular.ufo source directory (note: not a filepath to source, only include UFO directory name):
 
 ```
 $ ufodiff deltajson all commits:5 Test-Regular.ufo
@@ -219,7 +219,7 @@ $ ufodiff delta all commits:3 Test-Regular.ufo
 
 Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
 
-Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
+Add one or more optional UFO source base directory name (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
 
 <h3 id="deltajson"><a href=""> deltajson</a></h3>
@@ -274,7 +274,7 @@ JSON data are formatted as:
 
 Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
 
-Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
+Add one or more optional UFO source base directory name (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
 
 <h3 id="deltamd"><a href=""> deltamd</a></h3>
@@ -301,7 +301,7 @@ $ ufodiff deltamd all commits:3 Test-Regular.ufo
 
 Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
 
-Add one or more optional UFO source base filenames (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
+Add one or more optional UFO source base directory name (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
 
 <h3 id="diff"><a href=""> diff</a></h3>
