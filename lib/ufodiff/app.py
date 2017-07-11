@@ -44,46 +44,22 @@ def main():
 
     # DELTA + DELTAJSON + DELTAMD sub-commands
     #  ufodiff [delta|deltajson|deltamd] [all|glyph|nonglyph] [commits:number] <UFO file path>
-    acceptable_delta_ufodiff_subcmd_list = ['delta', 'deltajson', 'deltamd']
-    if c.subcmd in acceptable_delta_ufodiff_subcmd_list:
-        acceptable_deltacommands = ['all', 'glyph', 'nonglyph']  # used in command line argument validations
-
-        # Command line argument validations
-        # TODO: add test that commits integer requested by user is < number of total commits in the repository
-        if c.argc < 3:  # expected argument number
-            stderr("[ufodiff] ERROR: Too few arguments to the ufodiff delta command.")
-            sys.exit(1)
-        elif c.arg1 not in acceptable_deltacommands:  # acceptable sub command to delta
-            stderr("[ufodiff] ERROR: 'ufodiff " + c.arg0 + " " + c.arg1 + "' is not a valid request")
-            stderr("Acceptable arguments to " + c.arg0 + " include:")
-            for acceptable_deltacommand in acceptable_deltacommands:
-                stderr(" " + acceptable_deltacommand)
-            sys.exit(1)
-        elif not c.arg2.startswith("commits:"):  # did not include commits argument
-            stderr("[ufodiff] ERROR: Please include the 'commits:[number]' argument immediately after '" + c.arg1 + "'")
-            sys.exit(1)
-        elif len(c.arg2) < 9:  # did not include an integer with the commits argument
-            stderr("[ufodiff] ERROR: Please include an integer after the colon in the 'commits:[number]' argument")
-            sys.exit(1)
-
-        # Variable definitions
-        ufo_directory_list = []  # used to filter the UFO directories for delta reports
+    if c.subcmd in {'delta', 'deltajson', 'deltamd'}:
+        # argument validation
+        validate_delta_commands_args(c)
+        # create list for UFO filtered analyses as requested by user
+        ufo_directory_list = []
         for arg in c.argv:
             if arg.endswith('.ufo'):
                 ufo_directory_list.append(arg)
+        # TODO: add branch: support here (in addition to commits: shortcut)
         commits_list = c.arg2.split(':')
         commits_number = commits_list[1]
+        # Commit number integer validation
+        validate_commits_number(commits_number)
 
         # recursive search for the root of the git repository x 3 levels if not found in working directory
         verified_gitroot_path = get_git_root_path()
-        # Variable validations
-        if not commits_number.isdigit():  # validate that user entered number of commits for diff is an integer
-            stderr("[ufodiff] ERROR: The value following the colon in the 'commits:[number]' argument is not a valid "
-                   "integer value")
-            sys.exit(1)
-        elif int(commits_number) == 0 or int(commits_number) < 0:   # validate that the number of commits is > 0
-            stderr("[ufodiff] ERROR: Please define a value over zero for the number of previous commits to diff")
-            sys.exit(1)
 
         # perform the delta analysis on the repository
         delta = Delta(verified_gitroot_path, ufo_directory_list, commits_number)
@@ -104,7 +80,9 @@ def main():
         #     pass  # TODO: implement nonglyph only command handling with 'ufo delta nonglyph'
     # DIFF SUBCOMMAND
     elif c.subcmd == "diff":
-        # TODO: add argument validations
+        # argument validation
+        validate_diff_commands_args(c)
+        # execute the command
         try:
             verified_gitroot_path = get_git_root_path()
             diff = Diff(verified_gitroot_path, color_diff=True)
@@ -115,7 +93,9 @@ def main():
             sys.exit(1)
     # DIFFNC SUBCOMMAND
     elif c.subcmd == "diffnc":
-        # TODO: add argument validations
+        # argument validations
+        validate_diff_commands_args(c)
+        # execute the command
         try:
             verified_gitroot_path = get_git_root_path()
             diff = Diff(verified_gitroot_path, color_diff=False)
@@ -131,6 +111,59 @@ def main():
     # elif c.subcmd == "diff-filternc":
     #     pass
     sys.exit(0)
+
+
+# Command Line Utility Functions
+
+def validate_delta_commands_args(command_obj):
+    acceptable_deltacommands = ['all', 'glyph', 'nonglyph']  # used in command line argument validations
+    # Command line argument validations
+    if command_obj.argc < 3:  # expected argument number
+        stderr("[ufodiff] ERROR: Missing arguments.")
+        sys.exit(1)
+    if command_obj.arg1 not in acceptable_deltacommands:  # acceptable sub command to delta
+        stderr("[ufodiff] ERROR: 'ufodiff " + command_obj.arg0 + " " + command_obj.arg1 + "' is not a valid request")
+        stderr("Acceptable arguments to " + command_obj.arg0 + " include:")
+        for acceptable_deltacommand in acceptable_deltacommands:
+            stderr(" " + acceptable_deltacommand)
+        sys.exit(1)
+    if not command_obj.arg2.startswith("commits:"):  # did not include commits argument
+        stderr("[ufodiff] ERROR: Please include the 'commits:[number]' argument immediately after '" + command_obj.arg1 + "'")
+        sys.exit(1)
+    if len(command_obj.arg2) < 9:  # did not include an integer with the commits argument
+        stderr("[ufodiff] ERROR: Please include an integer after the colon in the 'commits:[number]' argument")
+        sys.exit(1)
+
+
+def validate_diff_commands_args(command_obj):
+    # argument validations
+    if command_obj.argc < 2:
+        stderr("[ufodiff] ERROR: Missing arguments.")
+        sys.exit(1)
+    if command_obj.arg1.startswith("commits:"):
+        if len(command_obj.arg1) < 9:
+            stderr("[ufodiff] ERROR: Please include an integer after the colon in the 'commits:[number]' argument")
+            sys.exit(1)
+        else:
+            commits_list = command_obj.arg1.split(':')
+            commits_number = commits_list[1]
+            # validate the number of commits as an integer value, exit with error message if not an integer
+            validate_commits_number(commits_number)
+    if command_obj.arg1.startswith("branch:"):
+        if len(command_obj.arg1) < 8:
+            stderr("[ufodiff] ERROR: Please include the name of a git branch following the colon in the "
+                   "'branch:[name]' argument")
+            sys.exit(1)
+
+
+def validate_commits_number(commits_number):
+    if not commits_number.isdigit():  # validate that user entered number of commits for diff is an integer
+        stderr("[ufodiff] ERROR: The value following the colon in the 'commits:[number]' argument is not a valid "
+               "integer value")
+        sys.exit(1)
+    elif int(commits_number) == 0 or int(commits_number) < 0:  # validate that the number of commits is > 0
+        stderr("[ufodiff] ERROR: Please define a value over zero for the number of previous commits")
+        sys.exit(1)
 
 
 def get_git_root_path():

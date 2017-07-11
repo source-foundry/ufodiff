@@ -39,8 +39,8 @@ class Diff(object):
     # PUBLIC METHODS
 
     def get_diff_string_generator(self, git_user_diff_string):
-        ufo_file_list = self.ufo.get_valid_file_filterlist_for_diff()
-        is_branch_test = False
+        ufo_file_list = self.ufo.get_valid_file_filterlist_for_diff()  # valid UFO files
+        is_branch_test = False   # default is a test between commits, not a test between branches, modified below
 
         if git_user_diff_string.startswith("commits:"):
             commits_list = git_user_diff_string.split(":")
