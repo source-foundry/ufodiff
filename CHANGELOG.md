@@ -1,5 +1,12 @@
 ## Changelog
 
+### 0.3.0
+
+- `diff` subcommand added to support colored text diffs between UFO spec source files
+- `diffnc` subcommand added to support uncolored text diffs between UFO spec source files
+- extensive code refactoring
+- fixed argument description errors in the in-app `--help` documentation
+
 ### v0.2.4
 
 - bug fix for commit SHA1 digest parsing on Windows
