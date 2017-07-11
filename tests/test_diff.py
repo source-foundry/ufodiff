@@ -101,7 +101,7 @@ def test_ufodiff_diff_get_diff_string_generator_method_colored_commits():
 
 def test_ufodiff_diff_get_diff_string_generator_method_uncolored_branch():
     diffobj = Diff(".")
-    test_generator = diffobj.get_diff_string_generator("branch:test")
+    test_generator = diffobj.get_diff_string_generator("branch:master")
     for thing in test_generator:
         pass
     assert isinstance(test_generator, types.GeneratorType)
@@ -109,7 +109,7 @@ def test_ufodiff_diff_get_diff_string_generator_method_uncolored_branch():
 
 def test_ufodiff_diff_get_diff_string_generator_method_colored_branch():
     diffobj = Diff(".", color_diff=True)
-    test_generator = diffobj.get_diff_string_generator("branch:test")
+    test_generator = diffobj.get_diff_string_generator("branch:master")
     for thing in test_generator:
         pass
     assert isinstance(test_generator, types.GeneratorType)

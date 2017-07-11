@@ -398,7 +398,7 @@ def test_ufodiff_commandline_diffnc_success_commits_arg(capsys):
 def test_ufodiff_commandline_diff_success_branch_arg(capsys):
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         from ufodiff.app import main
-        sys.argv = ['ufodiff', 'diff', 'branch:test']
+        sys.argv = ['ufodiff', 'diff', 'branch:master']
         main()
 
     out, err = capsys.readouterr()
@@ -409,7 +409,7 @@ def test_ufodiff_commandline_diff_success_branch_arg(capsys):
 def test_ufodiff_commandline_diffnc_success_branch_arg(capsys):
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         from ufodiff.app import main
-        sys.argv = ['ufodiff', 'diffnc', 'branch:test']
+        sys.argv = ['ufodiff', 'diffnc', 'branch:master']
         main()
 
     out, err = capsys.readouterr()
