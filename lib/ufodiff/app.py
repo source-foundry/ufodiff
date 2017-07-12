@@ -53,19 +53,40 @@ def main():
             if arg.endswith('.ufo'):
                 ufo_directory_list.append(arg)
         # TODO: add branch: support here (in addition to commits: shortcut)
-        commits_list = c.arg2.split(':')
-        commits_number = commits_list[1]
-        # Commit number integer validation
-        validate_commits_number(commits_number)
+
+        # flags for type of test
+        is_branch_test = False
+        is_commits_test = False
+
+        if c.arg2.startswith("commits:"):
+            # TODO: add commits argument validation
+            is_commits_test = True
+            commits_list = c.arg2.split(':')
+            commit_number = commits_list[1]
+            # Commit number integer validation
+            validate_commits_number(commit_number)
+        elif c.arg2.startswith("branch:"):
+            # TODO: add branch argument validation
+            is_branch_test = True
+            branch_list = c.arg2.split(':')
+            branch_name = branch_list[1]
+        else:
+            sys.exit(1)  # TODO: add direct git idiom call support
 
         # recursive search for the root of the git repository x 3 levels if not found in working directory
         verified_gitroot_path = get_git_root_path()
 
         # perform the delta analysis on the repository
-        delta = Delta(verified_gitroot_path, ufo_directory_list, commits_number)
+        if is_commits_test is True:
+            delta = Delta(verified_gitroot_path, ufo_directory_list, is_commit_test=True, commit_number=commit_number)
+        elif is_branch_test is True:
+            delta = Delta(verified_gitroot_path, ufo_directory_list, is_branch_test=True, compare_branch_name=branch_name)
+        else:
+            stderr("[ufodiff] ERROR: Please use either the 'commits:' or 'branch:' argument in the command")
+            sys.exit(1)
 
         # handle subcommand + subsubcommand combinations
-        if c.arg1 == "all":
+        if c.arg1 == "all" and is_commits_test is True:  # TODO: refactor this top block out to use only _get_stdout_string() method
             filepath_dict = delta.get_all_ufo_delta_fp_dict()
             if c.subcmd == "delta":
                 stdout_string = get_delta_string(filepath_dict, write_format='text')
@@ -74,6 +95,13 @@ def main():
             elif c.subcmd == "deltamd":
                 stdout_string = get_delta_string(filepath_dict, write_format='markdown')
             sys.stdout.write(stdout_string)
+        elif c.arg1 == "all" and is_branch_test is True:
+            if c.subcmd == "delta":
+                sys.stdout.write(delta.get_stdout_string(write_format='text'))
+            elif c.subcmd == "deltajson":
+                sys.stdout.write(delta.get_stdout_string(write_format='json'))
+            elif c.subcmd == "deltamd":
+                sys.stdout.write(delta.get_stdout_string(write_format='markdown'))
         # elif c.arg1 == "glyph":
         #     pass  # TODO: implement glyph only command handling with 'ufo delta glyph'
         # elif c.arg1 == "nonglyph":
@@ -127,12 +155,12 @@ def validate_delta_commands_args(command_obj):
         for acceptable_deltacommand in acceptable_deltacommands:
             stderr(" " + acceptable_deltacommand)
         sys.exit(1)
-    if not command_obj.arg2.startswith("commits:"):  # did not include commits argument
-        stderr("[ufodiff] ERROR: Please include the 'commits:[number]' argument immediately after '" + command_obj.arg1 + "'")
-        sys.exit(1)
-    if len(command_obj.arg2) < 9:  # did not include an integer with the commits argument
-        stderr("[ufodiff] ERROR: Please include an integer after the colon in the 'commits:[number]' argument")
-        sys.exit(1)
+    # if not command_obj.arg2.startswith("commits:") and not command_obj.arg2.startswith("branch:"):  # no commits or branch arg
+    #     stderr("[ufodiff] ERROR: Please include the 'commits:[number]' argument immediately after '" + command_obj.arg1 + "'")
+    #     sys.exit(1)
+    # if len(command_obj.arg2) < 9:  # did not include an integer with the commits argument
+    #     stderr("[ufodiff] ERROR: Please include an integer after the colon in the 'commits:[number]' argument")
+    #     sys.exit(1)
 
 
 def validate_diff_commands_args(command_obj):
