@@ -63,7 +63,7 @@ class Delta(object):
             modified_file_string = self.git.diff('--name-only', '--diff-filter=M', commit_number_string)
             modified_filepath_list = modified_file_string.split("\n")
         elif self.is_branch_test is True:
-            self.current_branch_name = git.rev_parse(['--abbrev-ref', 'HEAD'])
+            self.current_branch_name = self.git.rev_parse(['--abbrev-ref', 'HEAD'])
             branch_comparison_string = self.compare_branch_name + ".." + self.current_branch_name
             added_file_string = self.git.diff(['--name-only', '--diff-filter=A', branch_comparison_string])
             added_filepath_list = added_file_string.split('\n')
