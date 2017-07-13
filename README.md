@@ -43,7 +43,7 @@ Upgrade a previous installation with:
 
 ## Quickstart Examples
 
-### List UFO source file additions, deletions, and modifications
+<h3><a href="">List UFO source file additions, deletions, and modifications</h3>
 
 #### Plain Text
 
@@ -124,9 +124,9 @@ Between the current branch and the `development` branch
 ```
 
 
-### Text diff UFO source files
+<h3><a href="">Text diff UFO source files</h3>
 
-#### Colored text diff output
+#### Colored text diff
 ##### _For terminals with ANSI color code support_
 
 All modified UFO files, last two commits:
@@ -147,7 +147,7 @@ All modified files, current branch vs. development branch:
 $ ufodiff diff branch:development
 ```
 
-#### Uncolored text diff output
+#### Uncolored text diff
 
 All modified UFO files, last two commits:
 
@@ -229,7 +229,7 @@ ufodiff delta [all] [commits:[N] | branch:[name]] <optional UFO filter>
 
 where `N` is an integer value that represents the number of commits in the git commit history to examine.
 
-Examples:
+*Examples*:
 
 ```
 $ ufodiff delta all commits:3
@@ -259,7 +259,7 @@ ufodiff deltajson [all] [commits:[N] | branch:[name]] <optional UFO filter>
 
 where `N` is an integer value that represents the number of commits in the git commit history to examine.
 
-Examples:
+*Examples*:
 
 ```
 $ ufodiff deltajson all commits:3
@@ -341,7 +341,7 @@ ufodiff deltamd [all] [commits:[N] | branch:[name]] <optional UFO filter>
 
 where `N` is an integer value that represents the number of commits in the git commit history to examine and `name` is an existing git branch name for a branch vs. branch comparison.
 
-Examples:
+*Examples*:
 
 ```
 $ ufodiff deltamd all commits:3
@@ -368,7 +368,7 @@ ufodiff diff [commits:[N] | branch:[name]]
 
 where `N` is an integer value that represents the number of commits in the git commit history to examine and `name` is the name of an existing git branch in the repository.  These are mutually exclusive arguments.
 
-Examples:
+*Examples*:
 
 ```
 $ ufodiff diff commits:2
@@ -390,7 +390,7 @@ ufodiff diffnc [commits:[N] | branch:[name]]
 
 where `N` is an integer value that represents the number of commits in the git commit history to examine and `name` is the name of an existing git branch in the repository.  These are mutually exclusive arguments.
 
-Examples:
+*Examples*:
 
 ```
 $ ufodiff diffnc commits:2
