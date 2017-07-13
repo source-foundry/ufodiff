@@ -33,34 +33,32 @@ ufodiff is a source file diff tool for typefaces developed with UFO source.
 
 Subcommands:
 
-- delta         --- UFO source file add/del/mod as plain text
+- delta         --- UFO source file add/del/mod report as plain text
    - all
-- deltajson     --- UFO source file add/del/mod as JSON
+- deltajson     --- UFO source file add/del/mod report as JSON
    - all
-- deltamd       --- UFO source file add/del/mod as Markdown
+- deltamd       --- UFO source file add/del/mod report as Markdown
    - all
 - diff          --- colored text diff of UFO spec files (only)
 - diffnc        --- uncolored text diff of UFO spec files (only)
   
-Examples:
-  ufodiff delta all commits:3 <optional UFO filter>
-  ufodiff deltajson all commits:3 <optional UFO filter>
-  ufodiff deltamd all commits:3 <optional UFO filter>
-  ufodiff diff commits:3
-  ufodiff diff branch:development
-  ufodiff diff master..development
-  ufodiff diff HEAD~3
+Syntax:
+  ufodiff delta all [commits:[N] | branch:[name]] <optional UFO filter>
+  ufodiff deltajson all [commits:[N] | branch:[name]] <optional UFO filter>
+  ufodiff deltamd all [commits:[N] | branch:[name]] <optional UFO filter>
+  ufodiff diff [commits:[N] | branch:[name]]
+  ufodiff diffnc [commits:[N] | branch:[name]]
   
-Increase or decrease integer value after the `commits:` argument to modify evaluation to that number of previous commits in the git repository.
+Increase or decrease integer value after the `commits:` argument to analyze across that number of commits in the commit history.
 
-Specify the branch for comparison with your current branch after the `branch:` argument in the diff subcommands.
+Include an existing git branch for comparison with your current branch after the `branch:` argument.
 """
 
 # ------------------------------------------------------------------------------
 # Usage String
 # ------------------------------------------------------------------------------
 
-USAGE = "ufodiff [subcommand] [subcommand specific arguments]"
+USAGE = "ufodiff [subcommand] [subcommand arguments]"
 
 # ------------------------------------------------------------------------------
 # Version String

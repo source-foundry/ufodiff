@@ -1,10 +1,16 @@
 ## Changelog
 
+### 0.4.0
+
+- added support for branch vs. branch analysis to the `delta`, `deltajson`, and `deltamd` commands
+- updated `delta`, `deltajson`, and `deltamd` argument validations
+- bugfix for the git diff performed with the `diff` and `diffnc` commands (`branch...branch` to `branch..branch`)
+
+
 ### 0.3.0
 
 - `diff` subcommand added to support colored text diffs between UFO spec source files
 - `diffnc` subcommand added to support uncolored text diffs between UFO spec source files
-- extensive code refactoring
 - fixed argument description errors in the in-app `--help` documentation
 
 ### v0.2.4

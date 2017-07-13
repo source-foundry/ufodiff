@@ -2,9 +2,9 @@
 
 ## [![Build Status](https://travis-ci.org/source-foundry/ufodiff.svg?branch=master)](https://travis-ci.org/source-foundry/ufodiff) [![Build status](https://ci.appveyor.com/api/projects/status/o2vdn1uf7uxau3o7/branch/master?svg=true)](https://ci.appveyor.com/project/chrissimpkins/ufodiff/branch/master) [![codecov](https://codecov.io/gh/source-foundry/ufodiff/branch/master/graph/badge.svg)](https://codecov.io/gh/source-foundry/ufodiff)
 
-ufodiff is a command line UFO source file modification and diff tool for collaborative typeface development projects.
+ufodiff is a command line UFO source file diff tool for collaborative typeface development projects.
 
-It examines git repositories for changes to files that are part of the UFO source spec only (i.e. all file changes in the repository external to the UFO source code are not considered by the tool).  It supports reporting of UFO source file additions, deletions, and modifications as well as colored and uncolored text diffs for UFO source files.  Output is streamed through the standard output stream and can be piped to other applications.
+It examines git repositories for changes to files that are part of the UFO source spec only (i.e. all file changes in the repository external to the UFO source code are not considered by the tool).  It supports reporting of UFO source file additions, deletions, and modifications as well as colored and uncolored text diffs for UFO source files that were modified between branches or across one or more commits.
 
 UFO version 2 is fully supported in the current release.  UFO version 3 is partially supported and [full support is planned](https://github.com/source-foundry/ufodiff/issues/1).
 
@@ -65,6 +65,12 @@ For the last five commits, only from the Test-Regular.ufo source directory (note
 $ ufodiff delta all commits:5 Test-Regular.ufo
 ```
 
+Between the current branch and the `development` branch
+
+```
+# ufodiff delta all branch:development
+```
+
 #### Markdown
 
 For the last two commits in current branch:
@@ -85,6 +91,12 @@ For the last five commits in current branch, only from the Test-Regular.ufo sour
 $ ufodiff deltamd all commits:5 Test-Regular.ufo
 ```
 
+Between the current branch and the `development` branch
+
+```
+# ufodiff deltamd all branch:development
+```
+
 #### JSON
 
 For the last two commits in current branch:
@@ -103,6 +115,12 @@ For the last five commits in current branch, only from the Test-Regular.ufo sour
 
 ```
 $ ufodiff deltajson all commits:5 Test-Regular.ufo
+```
+
+Between the current branch and the `development` branch
+
+```
+# ufodiff deltajson all branch:development
 ```
 
 
@@ -204,7 +222,7 @@ For Markdown formatted data, see the `deltamd` command.  For JSON formatted data
 The syntax is:
 
 ```
-ufodiff delta [all] [commits:N] <optional UFO filter>
+ufodiff delta [all] [commits:[N] | branch:[name]] <optional UFO filter>
 ```
 
 where `N` is an integer value that represents the number of commits in the git commit history to examine.
@@ -215,11 +233,13 @@ Examples:
 $ ufodiff delta all commits:3
 $ ufodiff delta all commits:5
 $ ufodiff delta all commits:3 Test-Regular.ufo
+$ ufodiff delta all branch:development
+$ ufodiff delta all branch:development Test-Regular.ufo
 ```
 
-Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
+Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.  Include an existing git branch name following the `branch:` argument to perform a branch vs. branch comparison.
 
-Add one or more optional UFO source base directory name (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
+Add one or more optional UFO source base directory names (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
 
 <h3 id="deltajson"><a href=""> deltajson</a></h3>
@@ -232,7 +252,7 @@ For plain text formatted data, see the `delta` subcommand.  For Markdown formatt
 The syntax is: 
 
 ```
-ufodiff deltajson [all] [commits:N] <optional UFO filter>
+ufodiff deltajson [all] [commits:[N] | branch:[name]] <optional UFO filter>
 ```
 
 where `N` is an integer value that represents the number of commits in the git commit history to examine.
@@ -243,9 +263,11 @@ Examples:
 $ ufodiff deltajson all commits:3
 $ ufodiff deltajson all commits:5
 $ ufodiff deltajson all commits:3 Test-Regular.ufo
+$ ufodiff deltajson all branch:development
+$ ufodiff deltajson all branch:development Test-Regular.ufo
 ```
 
-JSON data are formatted as:
+JSON data for commit history analyses are formatted as:
 
 ```json
 {
@@ -272,7 +294,33 @@ JSON data are formatted as:
 }
 ```
 
-Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
+JSON data for branch vs. branch analyses are formatted as:
+
+```json
+{
+    "branches": [
+      "master",
+      "development"
+    ],
+    "added": [
+      "filepath 1",
+      "filepath 2",
+      "filepath 3"
+    ],
+    "deleted": [
+      "filepath 1",
+      "filepath 2",
+      "filepath 3"
+    ],
+    "modified": [
+      "filepath 1",
+      "filepath 2",
+      "filepath 3"
+    ]
+}
+```
+
+Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.  Include an existing git branch name following the `branch:` argument to perform a branch vs. branch comparison.
 
 Add one or more optional UFO source base directory name (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
@@ -286,10 +334,10 @@ For plain text formatted data, see the `delta` command.  For JSON formatted data
 The syntax is: 
 
 ```
-ufodiff deltamd [all] [commits:N] <optional UFO filter>
+ufodiff deltamd [all] [commits:[N] | branch:[name]] <optional UFO filter>
 ```
 
-where `N` is an integer value that represents the number of commits in the git commit history to examine.
+where `N` is an integer value that represents the number of commits in the git commit history to examine and `name` is an existing git branch name for a branch vs. branch comparison.
 
 Examples:
 
@@ -299,7 +347,7 @@ $ ufodiff deltamd all commits:5
 $ ufodiff deltamd all commits:3 Test-Regular.ufo
 ```
 
-Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.
+Increase or decrease the integer value after the `commits:` argument to change the depth of the git commit history that you want to examine.  Include an existing git branch name following the `branch:` argument to perform a branch vs. branch comparison.
 
 Add one or more optional UFO source base directory name (e.g. Font-Regular.ufo) as last positional arguments in your command to filter the delta analysis by individual source directories.
 
@@ -313,10 +361,10 @@ For uncolored diffs, see the `diffnc` command.
 The command syntax is:
 
 ```
-ufodiff diff [commits:N | branch:X]
+ufodiff diff [commits:[N] | branch:[name]]
 ```
 
-where `N` is an integer value that represents the number of commits in the git commit history to examine and `X` is the name of an existing branch in the git repository.  These are mutually exclusive arguments.
+where `N` is an integer value that represents the number of commits in the git commit history to examine and `name` is the name of an existing git branch in the repository.  These are mutually exclusive arguments.
 
 Examples:
 
@@ -336,10 +384,10 @@ For colored diffs intended for use in terminals that support ANSI color codes, s
 The command syntax is:
 
 ```
-ufodiff diffnc [commits:N | branch:X]
+ufodiff diffnc [commits:[N] | branch:[name]]
 ```
 
-where `N` is an integer value that represents the number of commits in the git commit history to examine and `X` is the name of an existing branch in the git repository.  These are mutually exclusive arguments.
+where `N` is an integer value that represents the number of commits in the git commit history to examine and `name` is the name of an existing git branch in the repository.  These are mutually exclusive arguments.
 
 Examples:
 
