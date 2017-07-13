@@ -7,6 +7,7 @@
 # ====================================================
 
 import os
+import sys
 
 from git import Repo
 from ufodiff.utilities.ufo import Ufo
@@ -48,7 +49,7 @@ class Diff(object):
             diff_arg_string = "HEAD~" + commits_number
         elif git_user_diff_string.startswith("branch:"):
             is_branch_test = True
-            diff_arg_string = self.current_branch + "..." + git_user_diff_string[7:]
+            diff_arg_string = self.current_branch + ".." + git_user_diff_string[7:]
         else:
             diff_arg_string = git_user_diff_string
 
