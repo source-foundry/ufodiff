@@ -55,7 +55,7 @@ class Delta(object):
         self.git = repo.git
 
         if self.is_commit_test is True:
-            commit_number_string = "HEAD~" + self.commit_number + ".."   # with HEAD~N.. syntax, excludes uncommitted changes
+            commit_number_string = "HEAD~" + self.commit_number  # with HEAD~N syntax
             added_file_string = self.git.diff('--name-only', '--diff-filter=A', commit_number_string)
             added_filepath_list = added_file_string.split("\n")
             deleted_file_string = self.git.diff('--name-only', '--diff-filter=D', commit_number_string)
