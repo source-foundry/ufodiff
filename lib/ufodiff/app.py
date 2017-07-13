@@ -76,9 +76,6 @@ def main():
             delta = Delta(verified_gitroot_path, ufo_directory_list, is_commit_test=True, commit_number=commit_number)
         elif is_branch_test is True:
             delta = Delta(verified_gitroot_path, ufo_directory_list, is_branch_test=True, compare_branch_name=branch_name)
-        else:
-            stderr("[ufodiff] ERROR: Please use either the 'commits:' or 'branch:' argument in the command")
-            sys.exit(1)
 
         if c.arg1 == "all":
             if c.subcmd == "delta":
@@ -142,7 +139,7 @@ def validate_delta_commands_args(command_obj):
         sys.exit(1)
     if command_obj.arg2.startswith("commits:"):
         commits_list = command_obj.arg2.split(":")
-        if len(commits_list) < 2:   # does not include a value following the colon
+        if len(commits_list) == 2 and commits_list[1] == '':   # does not include a value following the colon
             stderr("[ufodiff] ERROR: Please include an integer value following the 'commits:' argument")
             sys.exit(1)
         else:
@@ -150,7 +147,7 @@ def validate_delta_commands_args(command_obj):
             validate_commit_number(commits_number)
     elif command_obj.arg2.startswith("branch:"):
         branch_list = command_obj.arg2.split(":")
-        if len(branch_list) < 2:
+        if len(branch_list) == 2 and branch_list[1] == '':
             stderr("[ufodiff] ERROR: Please include the name of an existing git branch following the 'branch:' argument")
             sys.exit(1)
     else:
@@ -224,5 +221,3 @@ def get_git_root_path():
 
     return verified_gitroot_path
 
-# if __name__ == '__main__':
-#     main()
