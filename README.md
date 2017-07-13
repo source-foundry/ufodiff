@@ -1,4 +1,4 @@
-<img src="https://github.com/source-foundry/ufodiff/blob/images/images/ufodiff-logo-crunch.png?raw=true">
+<img src="https://github.com/source-foundry/ufodiff/blob/images/images/ufodiff-logo-2-crunch.png?raw=true">
 
 ## [![Build Status](https://travis-ci.org/source-foundry/ufodiff.svg?branch=master)](https://travis-ci.org/source-foundry/ufodiff) [![Build status](https://ci.appveyor.com/api/projects/status/o2vdn1uf7uxau3o7/branch/master?svg=true)](https://ci.appveyor.com/project/chrissimpkins/ufodiff/branch/master) [![codecov](https://codecov.io/gh/source-foundry/ufodiff/branch/master/graph/badge.svg)](https://codecov.io/gh/source-foundry/ufodiff)
 
