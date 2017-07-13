@@ -141,7 +141,7 @@ All modified UFO files, last five commits:
 $ ufodiff diff commits:5
 ```
 
-All modified files, master (current) vs. development branch:
+All modified files, current branch vs. development branch:
 
 ```
 $ ufodiff diff branch:development
@@ -161,7 +161,7 @@ All modified UFO files, last five commits:
 $ ufodiff diffnc commits:5
 ```
 
-All modified files, master (current) vs. development branch:
+All modified files, current branch vs. development branch:
 
 ```
 $ ufodiff diffnc branch:development
@@ -207,9 +207,11 @@ $ ufodiff delta all commits:1 > myfont_delta.txt
 - [diff](#diff)
 - [diffnc](#diffnc)
 
+The commit history for all commands is compared with the `HEAD~N` git idiom.  The branch comparisons across all commands are performed with the `test_branch..current_branch` git idiom.
+
 <h3 id="delta"><a href="">delta</a></h3>
 
-`ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits in text format.  The data are streamed through standard output in a newline delimited fashion with indicators for the type of file change.
+`ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits in text format.  The data are streamed through standard output with indicators for the type of file change.
 
 The file change indicators include:
 
@@ -299,8 +301,8 @@ JSON data for branch vs. branch analyses are formatted as:
 ```json
 {
     "branches": [
-      "master",
-      "development"
+      "branch 1",
+      "branch 2"
     ],
     "added": [
       "filepath 1",
@@ -371,7 +373,6 @@ Examples:
 ```
 $ ufodiff diff commits:2
 $ ufodiff diff branch:master
-
 ```
 
 
@@ -394,7 +395,6 @@ Examples:
 ```
 $ ufodiff diffnc commits:2
 $ ufodiff diffnc branch:master
-
 ```
 
 ## Issues
