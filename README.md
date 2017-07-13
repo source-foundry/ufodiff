@@ -211,7 +211,7 @@ The commit history for all commands is compared with the `HEAD~N` git idiom.  Th
 
 <h3 id="delta"><a href="">delta</a></h3>
 
-`ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits in text format.  The data are streamed through standard output with indicators for the type of file change.
+`ufo delta` generates file modification, addition, and deletion reports over a user specified number of commits or across git branches.  The data are streamed in plain text format through standard output with indicators for the type of file change.
 
 The file change indicators include:
 
@@ -247,7 +247,7 @@ Add one or more optional UFO source base directory names (e.g. Font-Regular.ufo)
 <h3 id="deltajson"><a href=""> deltajson</a></h3>
 
 
-`ufo deltajson` generates file modification, addition, and deletion reports over a user specified number of commits in JSON format.  The data are streamed through standard output.
+`ufo deltajson` generates file modification, addition, and deletion reports over a user specified number of commits or across git branches.  The data are streamed in JSON format through standard output.
 
 For plain text formatted data, see the `delta` subcommand.  For Markdown formatted data, see the `deltamd` command.
 
@@ -329,7 +329,7 @@ Add one or more optional UFO source base directory name (e.g. Font-Regular.ufo) 
 
 <h3 id="deltamd"><a href=""> deltamd</a></h3>
 
-`ufodiff deltamd` generates file modification, addition, and deletion reports over a user specified number of commits in Github flavored Markdown format.  The data are streamed through standard output.
+`ufodiff deltamd` generates file modification, addition, and deletion reports over a user specified number of commits or across git branches.  The data are streamed in Github flavored Markdown format through standard output.
 
 For plain text formatted data, see the `delta` command.  For JSON formatted data, see the `deltajson` command.
 
