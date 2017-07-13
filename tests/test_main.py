@@ -6,7 +6,43 @@ import sys
 import pytest
 import mock
 
+from git import Repo
+
 from ufodiff.app import get_git_root_path
+
+
+# creates a temporary new git branch (testing_branch) for testing
+def make_testing_branch():
+    repo = Repo('.')
+    gitobj = repo.git
+    # create 'test' branch if it doesn't exist so that it can be used for tests in this module
+    git_branch_string = gitobj.branch()
+    git_branch_list = git_branch_string.split("\n")
+    clean_branch_list = []
+    for branch in git_branch_list:
+        branch = branch.replace('*', '')
+        branch = branch.replace(' ', '')
+        clean_branch_list.append(branch)
+    if 'testing_branch' in clean_branch_list:
+        pass
+    else:
+        gitobj.branch('testing_branch')
+
+
+# deletes the temporary new git branch (testing_branch) for testing
+def delete_testing_branch():
+    repo = Repo('.')
+    gitobj = repo.git
+    # create 'test' branch if it doesn't exist so that it can be used for tests in this module
+    git_branch_string = gitobj.branch()
+    git_branch_list = git_branch_string.split("\n")
+    clean_branch_list = []
+    for branch in git_branch_list:
+        branch = branch.replace('*', '')
+        branch = branch.replace(' ', '')
+        clean_branch_list.append(branch)
+    if 'testing_branch' in clean_branch_list:
+        gitobj.branch('-d', 'testing_branch')
 
 # ///////////////////////////////////////////////////////
 #
@@ -177,6 +213,33 @@ def test_ufodiff_commandline_delta_commits_number_notdigit(capsys):
     assert err.startswith("[ufodiff] ERROR:")
     assert pytest_wrapped_e.type == SystemExit
     assert pytest_wrapped_e.value.code == 1
+
+
+def test_ufodiff_commandline_delta_missing_branch_name(capsys):
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'delta', 'all', 'branch:']
+        main()
+
+    out, err = capsys.readouterr()
+    assert err.startswith("[ufodiff] ERROR:")
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 1
+
+
+def test_commandline_delta_existing_branch_name(capsys):
+    make_testing_branch()
+
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'delta', 'all', 'branch:testing_branch']
+        main()
+
+    out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+
+    delete_testing_branch()
 
 
 def test_ufodiff_commandline_delta_commits_number_with_ufo_filter(capsys):
@@ -395,28 +458,34 @@ def test_ufodiff_commandline_diffnc_success_commits_arg(capsys):
     assert pytest_wrapped_e.value.code == 0
 
 
-# Branch tests fail on remote CI (remove comments to test locally)
+def test_ufodiff_commandline_diff_success_branch_arg(capsys):
+    make_testing_branch()
 
-# def test_ufodiff_commandline_diff_success_branch_arg(capsys):
-#     with pytest.raises(SystemExit) as pytest_wrapped_e:
-#         from ufodiff.app import main
-#         sys.argv = ['ufodiff', 'diff', 'branch:test']
-#         main()
-#
-#     out, err = capsys.readouterr()
-#     assert pytest_wrapped_e.type == SystemExit
-#     assert pytest_wrapped_e.value.code == 0
-#
-#
-# def test_ufodiff_commandline_diffnc_success_branch_arg(capsys):
-#     with pytest.raises(SystemExit) as pytest_wrapped_e:
-#         from ufodiff.app import main
-#         sys.argv = ['ufodiff', 'diffnc', 'branch:test']
-#         main()
-#
-#     out, err = capsys.readouterr()
-#     assert pytest_wrapped_e.type == SystemExit
-#     assert pytest_wrapped_e.value.code == 0
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diff', 'branch:testing_branch']
+        main()
+
+    out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+
+    delete_testing_branch()
+
+
+def test_ufodiff_commandline_diffnc_success_branch_arg(capsys):
+    make_testing_branch()
+
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        from ufodiff.app import main
+        sys.argv = ['ufodiff', 'diffnc', 'branch:testing_branch']
+        main()
+
+    out, err = capsys.readouterr()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code == 0
+
+    delete_testing_branch()
 
 
 def test_ufodiff_commandline_diff_success_git_arg(capsys):

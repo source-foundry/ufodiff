@@ -10,70 +10,7 @@ from git import Repo
 
 from ufodiff.subcommands.delta import Delta, DeltaFilepathStringDict
 
-
-# # Mock Diffable class for unit tests - need to assign values in tests
-# class MockDiffableObj(object):
-#     def __init__(self):
-#         self.a_rawpath = ""
-#         self.new_file = True
-#         self.deleted_file = True
-#         self.change_type = "M"
-#
-#
-# def get_mock_newfile():
-#     mdo = MockDiffableObj()
-#     mdo.a_rawpath = "fontinfo.plist"
-#     mdo.new_file = True
-#     mdo.deleted_file = False
-#     mdo.change_type = "Z"
-#     return mdo
-#
-#
-# def get_mock_deleted_file():
-#     mdo = MockDiffableObj()
-#     mdo.a_rawpath = "features.fea"
-#     mdo.new_file = False
-#     mdo.deleted_file = True
-#     mdo.change_type = "Z"
-#     return mdo
-#
-#
-# def get_mock_modified_file_nonglyph():
-#     mdo = MockDiffableObj()
-#     mdo.a_rawpath = "metainfo.plist"
-#     mdo.new_file = False
-#     mdo.deleted_file = False
-#     mdo.change_type = "M"
-#     return mdo
-#
-#
-# def get_mock_modified_file_glyph():
-#     mdo = MockDiffableObj()
-#     mdo.a_rawpath = "A.glif"
-#     mdo.new_file = False
-#     mdo.deleted_file = False
-#     mdo.change_type = "M"
-#     return mdo
-#
-#
-# def get_mock_modified_file_invalidufo():
-#     # not valid UFO file
-#     mdo = MockDiffableObj()
-#     mdo.a_rawpath = "bogus.bogus"
-#     mdo.new_file = True
-#     mdo.deleted_file = True
-#     mdo.change_type = "M"
-#     return mdo
-#
-#
-# def get_mock_allchange_file_with_filterpath():
-#     mdo = MockDiffableObj()
-#     mdo.a_rawpath = os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
-#     mdo.new_file = True
-#     mdo.deleted_file = True
-#     mdo.change_type = "M"
-#     return mdo
-
+# creates a temporary new git branch (testing_branch) for testing
 def make_testing_branch():
     repo = Repo('.')
     gitobj = repo.git
@@ -90,7 +27,7 @@ def make_testing_branch():
     else:
         gitobj.branch('testing_branch')
 
-
+# deletes the temporary new git branch (testing_branch) for testing
 def delete_testing_branch():
     repo = Repo('.')
     gitobj = repo.git

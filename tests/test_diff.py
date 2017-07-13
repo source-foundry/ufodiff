@@ -51,6 +51,40 @@ test_dirty_diff_string_commits_color = """\x1b[1mdiff --git a/README.md b/README
    <key>familyName</key>^[[m"""
 
 
+# creates a temporary new git branch (testing_branch) for testing
+def make_testing_branch():
+    repo = Repo('.')
+    gitobj = repo.git
+    # create 'test' branch if it doesn't exist so that it can be used for tests in this module
+    git_branch_string = gitobj.branch()
+    git_branch_list = git_branch_string.split("\n")
+    clean_branch_list = []
+    for branch in git_branch_list:
+        branch = branch.replace('*', '')
+        branch = branch.replace(' ', '')
+        clean_branch_list.append(branch)
+    if 'testing_branch' in clean_branch_list:
+        pass
+    else:
+        gitobj.branch('testing_branch')
+
+
+# deletes the temporary new git branch (testing_branch) for testing
+def delete_testing_branch():
+    repo = Repo('.')
+    gitobj = repo.git
+    # create 'test' branch if it doesn't exist so that it can be used for tests in this module
+    git_branch_string = gitobj.branch()
+    git_branch_list = git_branch_string.split("\n")
+    clean_branch_list = []
+    for branch in git_branch_list:
+        branch = branch.replace('*', '')
+        branch = branch.replace(' ', '')
+        clean_branch_list.append(branch)
+    if 'testing_branch' in clean_branch_list:
+        gitobj.branch('-d', 'testing_branch')
+
+
 # ///////////////////////////////////////////////////////
 #
 #  Diff class tests
@@ -99,22 +133,28 @@ def test_ufodiff_diff_get_diff_string_generator_method_colored_commits():
     assert isinstance(test_generator, types.GeneratorType)
 
 
-# Branch tests fail on remote CI testing, remove comments to test locally
+def test_ufodiff_diff_get_diff_string_generator_method_uncolored_branch():
+    make_testing_branch()
 
-# def test_ufodiff_diff_get_diff_string_generator_method_uncolored_branch():
-#     diffobj = Diff(".")
-#     test_generator = diffobj.get_diff_string_generator("branch:master")
-#     for thing in test_generator:
-#         pass
-#     assert isinstance(test_generator, types.GeneratorType)
-#
-#
-# def test_ufodiff_diff_get_diff_string_generator_method_colored_branch():
-#     diffobj = Diff(".", color_diff=True)
-#     test_generator = diffobj.get_diff_string_generator("branch:master")
-#     for thing in test_generator:
-#         pass
-#     assert isinstance(test_generator, types.GeneratorType)
+    diffobj = Diff(".")
+    test_generator = diffobj.get_diff_string_generator("branch:testing_branch")
+    for thing in test_generator:
+        pass
+    assert isinstance(test_generator, types.GeneratorType)
+
+    delete_testing_branch()
+
+
+def test_ufodiff_diff_get_diff_string_generator_method_colored_branch():
+    make_testing_branch()
+
+    diffobj = Diff(".", color_diff=True)
+    test_generator = diffobj.get_diff_string_generator("branch:testing_branch")
+    for thing in test_generator:
+        pass
+    assert isinstance(test_generator, types.GeneratorType)
+
+    delete_testing_branch()
 
 
 def test_ufodiff_diff_get_diff_string_generator_method_uncolored_gitidiom():
