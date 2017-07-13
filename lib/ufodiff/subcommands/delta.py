@@ -217,6 +217,14 @@ class Delta(object):
 
 
 class DeltaFilepathStringDict(object):
+    """
+    Object that maintains a Python dictionary of filepaths that meet UFO spec and any user defined UFO path filters
+    for use in the generation of standard output strings.
+
+    UFO spec validation occurs here.
+
+    User defined UFO directory path filter occurs here.
+    """
     def __init__(self, ufo_directory_list):
         self.delta_dict = {}
         self.ufo_directory_list = ufo_directory_list
