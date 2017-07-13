@@ -18,7 +18,7 @@ from commandlines import Command
 from standardstreams import stdout, stderr
 
 from ufodiff import settings  # defines application version, help string, version string, usage string
-from ufodiff.subcommands.delta import Delta, get_delta_string
+from ufodiff.subcommands.delta import Delta
 from ufodiff.subcommands.diff import Diff
 
 from ufodiff.utilities import dir_exists
@@ -52,7 +52,6 @@ def main():
         for arg in c.argv:
             if arg.endswith('.ufo'):
                 ufo_directory_list.append(arg)
-        # TODO: add branch: support here (in addition to commits: shortcut)
 
         # flags for type of test
         is_branch_test = False
@@ -76,7 +75,7 @@ def main():
         # recursive search for the root of the git repository x 3 levels if not found in working directory
         verified_gitroot_path = get_git_root_path()
 
-        # perform the delta analysis on the repository
+        # perform the delta analysis on the repository, different object for commits vs branch tests
         if is_commits_test is True:
             delta = Delta(verified_gitroot_path, ufo_directory_list, is_commit_test=True, commit_number=commit_number)
         elif is_branch_test is True:
@@ -85,17 +84,7 @@ def main():
             stderr("[ufodiff] ERROR: Please use either the 'commits:' or 'branch:' argument in the command")
             sys.exit(1)
 
-        # handle subcommand + subsubcommand combinations
-        if c.arg1 == "all" and is_commits_test is True:  # TODO: refactor this top block out to use only _get_stdout_string() method
-            filepath_dict = delta.get_all_ufo_delta_fp_dict()
-            if c.subcmd == "delta":
-                stdout_string = get_delta_string(filepath_dict, write_format='text')
-            elif c.subcmd == "deltajson":
-                stdout_string = get_delta_string(filepath_dict, write_format='json')
-            elif c.subcmd == "deltamd":
-                stdout_string = get_delta_string(filepath_dict, write_format='markdown')
-            sys.stdout.write(stdout_string)
-        elif c.arg1 == "all" and is_branch_test is True:
+        if c.arg1 == "all":
             if c.subcmd == "delta":
                 sys.stdout.write(delta.get_stdout_string(write_format='text'))
             elif c.subcmd == "deltajson":

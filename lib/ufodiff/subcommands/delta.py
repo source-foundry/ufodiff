@@ -6,8 +6,6 @@
 # MIT License
 # ====================================================
 
-import sys
-
 import os
 import json
 
@@ -36,18 +34,12 @@ class Delta(object):
         self.compare_branch_name = compare_branch_name
         self.current_branch_name = ""    # defined in _define_and_validate_ufo_diff_lists if branch test
         self.ufo = Ufo()                               # Ufo class used for UFO source validations
-        self.delta_fp_dict = DeltaFilepathDict(ufo_directory_list)  # stores GitPython diffobj.a_rawpath values  # TODO: refactor this out
+        self.git = None
         self.delta_fp_string_dict = DeltaFilepathStringDict(ufo_directory_list)  # stores delta file strings in .delta_dict attribute
 
         self.commit_sha1_list = []
 
-        # diffobj lists (old) -  # TODO: refactor away from these and to the pure string lists
-        # self.all_ufo_diffobj_list = []
-        self.added_ufo_diffobj_list = []
-        self.modified_ufo_diffobj_list = []
-        self.deleted_ufo_diffobj_list = []
-
-        # file string lists (new) - # TODO: keep these lists and refactor code to use these instead
+        # file string lists
         self.added_ufo_file_list = []
         self.modified_ufo_file_list = []
         self.deleted_ufo_file_list = []
@@ -57,50 +49,38 @@ class Delta(object):
 
     # PRIVATE METHODS
     def _define_and_validate_ufo_diff_lists(self):
+        # instantiate git Repo object
         repo = Repo(self.gitrepo_path)
-        git = repo.git
+        # define class attribute git object
+        self.git = repo.git
 
         if self.is_commit_test is True:
-            commit_number_string = "HEAD~" + self.commit_number
-            hcommit = repo.head.commit
-
-            # add file changes to the class attribute lists
-            for diff_file in hcommit.diff(commit_number_string):
-                # self.all_ufo_diffobj_list.append(diff_file)
-                self._validate_ufo_and_load_lists(diff_file)
-
-            # add commit SHA1 values to class attribute lists
-            self._add_commit_sha1_to_lists(git)
+            commit_number_string = "HEAD~" + self.commit_number + ".."   # with HEAD~N.. syntax, excludes uncommitted changes
+            added_file_string = self.git.diff('--name-only', '--diff-filter=A', commit_number_string)
+            added_filepath_list = added_file_string.split("\n")
+            deleted_file_string = self.git.diff('--name-only', '--diff-filter=D', commit_number_string)
+            deleted_filepath_list = deleted_file_string.split("\n")
+            modified_file_string = self.git.diff('--name-only', '--diff-filter=M', commit_number_string)
+            modified_filepath_list = modified_file_string.split("\n")
         elif self.is_branch_test is True:
             self.current_branch_name = git.rev_parse(['--abbrev-ref', 'HEAD'])
             branch_comparison_string = self.compare_branch_name + ".." + self.current_branch_name
-            added_file_string = git.diff(['--name-only', '--diff-filter=A', branch_comparison_string])
+            added_file_string = self.git.diff(['--name-only', '--diff-filter=A', branch_comparison_string])
             added_filepath_list = added_file_string.split('\n')
-            deleted_file_string = git.diff(['--name-only', '--diff-filter=D', branch_comparison_string])
+            deleted_file_string = self.git.diff(['--name-only', '--diff-filter=D', branch_comparison_string])
             deleted_filepath_list = deleted_file_string.split('\n')
-            modified_file_string = git.diff(['--name-only', '--diff-filter=M', branch_comparison_string])
+            modified_file_string = self.git.diff(['--name-only', '--diff-filter=M', branch_comparison_string])
             modified_filepath_list = modified_file_string.split('\n')
 
-            # load class attribute lists with the filepaths that are validated to be UFO in the following method
-            self._validate_ufo_and_load_dict_from_filepath_strings(added_filepath_list, deleted_filepath_list, modified_filepath_list)
+        # load class attribute lists with the filepaths that are validated to be UFO in the following method
+        self._validate_ufo_and_load_dict_from_filepath_strings(added_filepath_list, deleted_filepath_list, modified_filepath_list)
 
-    def _add_commit_sha1_to_lists(self, git):
+    def _add_commit_sha1_to_lists(self):
         # add the commit SHA1 shortcodes for commits requested by user to the class property list
         sha1_num_commits = "-" + self.commit_number
         sha1_args = [sha1_num_commits, '--pretty=%h']
-        sha1_string = git.log(sha1_args)   # git log -[N] --pretty=%h  ===> newline delimited list of SHA1 for N commits
+        sha1_string = self.git.log(sha1_args)   # git log -[N] --pretty=%h  ===> newline delimited list of SHA1 for N commits
         self.commit_sha1_list = sha1_string.split("\n")  # do not modify to os.linesep, Win fails tests with this change
-
-    def _validate_ufo_and_load_lists(self, diff_file):   # TODO: eliminate this as part of refactor
-        # test for valid UFO files and add the diff object from gitpython (git import) to the list
-        if diff_file.new_file is True and self.ufo.validate_file(diff_file.a_rawpath) is True:      # added files
-            self.added_ufo_diffobj_list.append(diff_file)
-        if diff_file.change_type == "M" and self.ufo.validate_file(diff_file.a_rawpath) is True:    # modified files
-            self.modified_ufo_diffobj_list.append(diff_file)
-        if diff_file.deleted_file is True and self.ufo.validate_file(diff_file.a_rawpath) is True:  # deleted files
-            self.deleted_ufo_diffobj_list.append(diff_file)
-            # if diff_file.renamed is True:
-            #     self.renamed_diffobj_list.append(diff_file)
 
     def _validate_ufo_and_load_dict_from_filepath_strings(self, added_filepath_list, deleted_filepath_list, modified_filepath_list):
         # test for valid UFO files and add the filepath string to the appropriate class instance attribute
@@ -124,6 +104,7 @@ class Delta(object):
 
         # define the key:value structure of the dictionary attribute on the DeltaFilepathStringDict() class
         if self.is_commit_test:
+            self._add_commit_sha1_to_lists()
             self.delta_fp_string_dict.add_commit_sha1(self.commit_sha1_list)          # create 'commits' dict key
         elif self.is_branch_test:
             branch_list = [self.compare_branch_name, self.current_branch_name]
@@ -218,13 +199,6 @@ class Delta(object):
 
     # PUBLIC METHODS
 
-    def get_all_ufo_delta_fp_dict(self):
-        self.delta_fp_dict.add_commit_sha1(self.commit_sha1_list)
-        self.delta_fp_dict.add_added_filepaths(self.added_ufo_diffobj_list)
-        self.delta_fp_dict.add_modified_filepaths(self.modified_ufo_diffobj_list)
-        self.delta_fp_dict.add_deleted_filepaths(self.deleted_ufo_diffobj_list)
-        return self.delta_fp_dict
-
     def get_stdout_string(self, write_format=None):
         if write_format == 'text':
             return self._get_delta_text_string()
@@ -232,7 +206,6 @@ class Delta(object):
             return self._get_delta_json_string()
         elif write_format == 'markdown':
             return self._get_delta_markdown_string()
-
 
     # TODO: implement glyph only data
     # def get_stdout_string_glyph_only(self):
@@ -274,119 +247,3 @@ class DeltaFilepathStringDict(object):
 
     def add_branches(self, branch_name_list):
         self.delta_dict['branches'] = self._filter_and_load_lists(branch_name_list)
-
-
-class DeltaFilepathDict(object):   # TODO: old class, refactor out
-    def __init__(self, ufo_directory_list):
-        self.delta_dict = {}
-        self.ufo_directory_list = ufo_directory_list
-
-    def _filter_and_load_lists(self, diffobj_list):
-        the_filepath_list = []
-        if len(self.ufo_directory_list) == 0:  # no user defined UFO source filters, include all UFO source
-            for a_diffobj in diffobj_list:
-                the_filepath_list.append(a_diffobj.a_rawpath)
-        else:
-            for a_diffobj in diffobj_list:
-                for ufo_directory_filter_path in self.ufo_directory_list:  # filter for user defined UFO source
-                    if ufo_directory_filter_path in a_diffobj.a_rawpath:
-                        the_filepath_list.append(a_diffobj.a_rawpath)
-
-        return the_filepath_list
-
-    def add_added_filepaths(self, diffobj_list):
-
-        self.delta_dict['added'] = self._filter_and_load_lists(diffobj_list)
-
-    def add_modified_filepaths(self, diffobj_list):
-
-        self.delta_dict['modified'] = self._filter_and_load_lists(diffobj_list)
-
-    def add_deleted_filepaths(self, diffobj_list):
-
-        self.delta_dict['deleted'] = self._filter_and_load_lists(diffobj_list)
-
-    def add_commit_sha1(self, sha1_list):
-        self.delta_dict['commits'] = sha1_list
-
-
-def get_delta_string(delta_fp_dict_obj, write_format):  # TODO: refactor out
-    """
-    Generates standard output text strings, JSON strings, and Markdown formatted strings for delta / deltajson / deltamd
-    commands
-    :param delta_fp_dict_obj: dictionary of GitPython diff objects as DeltaFilepathDict object class property .delta_dict
-    :param write_format: 'text', 'json', or 'markdown', defines delta, deltajson, and deltamd subcommand string generated
-    :return: string
-    """
-    if write_format == 'text':
-        textstring = ""
-
-        delta_fp_dict = delta_fp_dict_obj.delta_dict
-
-        # Write SHA1 commits under examination
-        if len(delta_fp_dict['commits']) > 0:
-            textstring += os.linesep + "Commit history SHA1 for this analysis:" + os.linesep
-            for sha1_commit in delta_fp_dict['commits']:
-                textstring += " " + sha1_commit + os.linesep
-            textstring += os.linesep
-
-        if len(delta_fp_dict['added']) > 0:
-            for added_file in delta_fp_dict['added']:
-                add_append_string = "[A]:" + added_file + os.linesep
-                textstring += add_append_string
-
-        if len(delta_fp_dict['deleted']) > 0:
-            for deleted_file in delta_fp_dict['deleted']:
-                del_append_string = "[D]:" + deleted_file + os.linesep
-                textstring += del_append_string
-
-        if len(delta_fp_dict['modified']) > 0:
-            for modified_file in delta_fp_dict['modified']:
-                mod_append_string = "[M]:" + modified_file + os.linesep
-                textstring += mod_append_string
-        # return the text string
-        return textstring
-    elif write_format == 'json':
-        return json.dumps(delta_fp_dict_obj.delta_dict)
-    elif write_format == "markdown":
-        markdown_string = ""
-
-        delta_fp_dict = delta_fp_dict_obj.delta_dict
-
-        # SHA1 shortcode for included commits block
-        if len(delta_fp_dict['commits']) > 0:
-            markdown_string += "## Commit history SHA1 for this analysis:" + os.linesep
-            for sha1_commit in delta_fp_dict['commits']:
-                markdown_string += "- `" + sha1_commit + "`" + os.linesep
-            markdown_string += os.linesep
-
-        # Added files block
-        markdown_string += "## Added Files" + os.linesep
-
-        if len(delta_fp_dict['added']) > 0:
-            for added_file in delta_fp_dict['added']:
-                markdown_string += "- " + added_file + os.linesep
-        else:
-            markdown_string += "- None" + os.linesep
-
-        # Deleted files block
-        markdown_string += os.linesep + os.linesep + "## Deleted Files" + os.linesep
-        if len(delta_fp_dict['deleted']) > 0:
-            for deleted_file in delta_fp_dict['deleted']:
-                markdown_string += "- " + deleted_file + os.linesep
-        else:
-            markdown_string += "- None" + os.linesep
-
-        # Modified files block
-        markdown_string += os.linesep + os.linesep + "## Modified Files" + os.linesep
-        if len(delta_fp_dict['modified']) > 0:
-            for modified_file in delta_fp_dict['modified']:
-                markdown_string += "- " + modified_file + os.linesep
-        else:
-            markdown_string += "- None" + os.linesep
-
-        markdown_string += os.linesep + os.linesep + '---' + os.linesep + "[ufodiff](https://github.com/source-foundry/ufodiff) v" + major_version + "." + minor_version + "." + patch_version
-        markdown_string += " | [Report Issue](https://github.com/source-foundry/ufodiff/issues)"
-        return markdown_string
-
-
