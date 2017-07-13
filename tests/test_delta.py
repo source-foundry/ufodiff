@@ -74,6 +74,28 @@ from ufodiff.subcommands.delta import Delta, DeltaFilepathStringDict
 #     mdo.change_type = "M"
 #     return mdo
 
+def make_testing_branch():
+    repo = Repo('.')
+    gitobj = repo.git
+    # create 'test' branch if it doesn't exist so that it can be used for tests in this module
+    git_branch_string = gitobj.branch()
+    git_branch_list = git_branch_string.split("\n")
+    if 'testing_branch' in git_branch_list:
+        pass
+    else:
+        gitobj.branch('testing_branch')
+
+
+def delete_testing_branch():
+    repo = Repo('.')
+    gitobj = repo.git
+    # create 'test' branch if it doesn't exist so that it can be used for tests in this module
+    git_branch_string = gitobj.branch()
+    git_branch_list = git_branch_string.split("\n")
+    if 'testing_branch' in git_branch_list:
+        pass
+    else:
+        gitobj.branch('-d','testing_branch')
 
 def get_mock_added_list():
     added_list = []
@@ -119,15 +141,20 @@ def test_ufodiff_delta_class_instantiation_commit():
 
 
 def test_ufodiff_delta_class_instantiation_branch():
+    make_testing_branch()
+
     try:
-        deltaobj = Delta('.', [], is_branch_test=True, compare_branch_name='test')
+        deltaobj = Delta('.', [], is_branch_test=True, compare_branch_name='testing_branch')
         assert deltaobj.is_commit_test is False
         assert deltaobj.is_branch_test is True
-        assert deltaobj.compare_branch_name == "test"
+        assert deltaobj.compare_branch_name == "testing_branch"
         assert deltaobj.commit_number == "0"
         assert len(deltaobj.ufo_directory_list) == 0
     except Exception as e:
+        delete_testing_branch()
         pytest.fail(e)
+
+    delete_testing_branch()
 
 
 def test_ufodiff_delta_class_instantiation_commit_with_ufo_filter():
@@ -144,16 +171,21 @@ def test_ufodiff_delta_class_instantiation_commit_with_ufo_filter():
 
 
 def test_ufodiff_delta_class_instantiation_branch_with_ufo_filter():
+    make_testing_branch()
+
     try:
-        deltaobj = Delta('.', ['Font-Regular.ufo'], is_branch_test=True, compare_branch_name='test')
+        deltaobj = Delta('.', ['Font-Regular.ufo'], is_branch_test=True, compare_branch_name='testing_branch')
         assert deltaobj.is_commit_test is False
         assert deltaobj.is_branch_test is True
-        assert deltaobj.compare_branch_name == "test"
+        assert deltaobj.compare_branch_name == "testing_branch"
         assert deltaobj.commit_number == "0"
         assert len(deltaobj.ufo_directory_list) == 1
         assert deltaobj.ufo_directory_list[0] == "Font-Regular.ufo"
     except Exception as e:
+        delete_testing_branch()
         pytest.fail(e)
+
+    delete_testing_branch()
 
 
 def test_ufodiff_delta_add_commit_sha1_method():
