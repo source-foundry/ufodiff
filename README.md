@@ -8,6 +8,9 @@ It examines git repositories for changes to files that are part of the UFO sourc
 
 UFO version 2 is fully supported in the current release.  UFO version 3 is partially supported and [full support is planned](https://github.com/source-foundry/ufodiff/issues/1).
 
+
+<img src="https://github.com/source-foundry/ufodiff/blob/images/images/diff-delta-crunch.png?raw=true">
+
 ## Contents
 
 - [Current Release Status](#current-release-status)
