@@ -230,7 +230,7 @@ The syntax is:
 ufodiff delta [all] [commits:[N] | branch:[name]] <optional UFO filter>
 ```
 
-where `N` is an integer value that represents the number of commits in the git commit history to examine.
+where `N` is an integer value that represents the number of commits in the git commit history to examine and `name` is the name of an existing git branch in the repository.  These are mutually exclusive arguments.
 
 *Examples*:
 
@@ -260,7 +260,7 @@ The syntax is:
 ufodiff deltajson [all] [commits:[N] | branch:[name]] <optional UFO filter>
 ```
 
-where `N` is an integer value that represents the number of commits in the git commit history to examine.
+where `N` is an integer value that represents the number of commits in the git commit history to examine and `name` is the name of an existing git branch in the repository.  These are mutually exclusive arguments.
 
 *Examples*:
 
