@@ -9,7 +9,9 @@
 """
 The app.py module defines a main() function that includes the logic for the `ufodiff` command line executable.
 
-This command line executable performs diff comparisons of UFO source files that are used in typeface development.
+This command line executable provides file modification (add, delete, modified) and text diff reports
+for files and directory structure that are part of the Unified Font Object (UFO) specification.  These source
+files are used in typeface development.
 """
 
 import os
@@ -43,7 +45,6 @@ def main():
         sys.exit(0)
 
     # DELTA + DELTAJSON + DELTAMD sub-commands
-    #  ufodiff [delta|deltajson|deltamd] [all|glyph|nonglyph] [commits:number | branch:name] <UFO file path>
     if c.subcmd in {'delta', 'deltajson', 'deltamd'}:
         # argument validation
         validate_delta_commands_args(c)
@@ -126,6 +127,13 @@ def main():
 # Command Line Utility Functions
 
 def validate_delta_commands_args(command_obj):
+    """
+    Validates arguments for any delta/deltajson/deltamd command requested by user.  It provides
+    user error messages and raises SystemExit for erroneous command entry at the command line.
+
+    :param command_obj: a commandlines library Command object
+    :return: no return object, SystemExit raised for all errors detected
+    """
     acceptable_deltacommands = ['all']  # used in command line argument validations
     # Command line argument validations
     if command_obj.argc < 3:  # expected argument number
@@ -156,6 +164,13 @@ def validate_delta_commands_args(command_obj):
 
 
 def validate_diff_commands_args(command_obj):
+    """
+    Validates arguments for any diff/diffnc command requested by user.  It provides user error
+    messages and raises SystemExit for erroneous command entry at the command line.
+
+    :param command_obj: a commandlines library Command object
+    :return: no return object, SystemExit raised for all errors detected
+    """
     # argument validations
     if command_obj.argc < 2:
         stderr("[ufodiff] ERROR: Missing arguments.")
@@ -177,6 +192,12 @@ def validate_diff_commands_args(command_obj):
 
 
 def validate_commit_number(commits_number):
+    """
+    Validates commit number entered by user following `commits:` argument as valid integer and within appropriate range
+
+    :param commits_number: string that was entered by user following `commits:` argument
+    :return: no return object, raises SystemExit for all errors detected
+    """
     if not commits_number.isdigit():  # validate that user entered number of commits for diff is an integer
         stderr(
             "[ufodiff] ERROR: The value following the colon in the 'commits:[number]' argument is not a valid "
@@ -188,6 +209,10 @@ def validate_commit_number(commits_number):
 
 
 def get_git_root_path():
+    """
+    Recursively searches for git root path over 4 directory levels above working directory
+    :return: validated git root path as string OR raises SystemExit if not found
+    """
     try:
         # begin by defining current working directory as root of git repository
         unverified_gitroot_path = os.path.abspath('.')

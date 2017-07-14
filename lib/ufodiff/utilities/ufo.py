@@ -10,6 +10,9 @@ import os
 
 
 class Ufo(object):
+    """
+    Validates filepaths based upon the Unified Font Object source specification
+    """
     def __init__(self):
         self.acceptable_files = {
             'metainfo.plist',

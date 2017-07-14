@@ -18,37 +18,47 @@ from ufodiff.settings import major_version, minor_version, patch_version
 class Delta(object):
     """
     Delta class stores delta subcommand data and provides methods to support creation of
-    delta / deltajson / deltamd reports.  Uses DeltaFilepathDict class to filter diff file list
-    by user specified UFO source directory filter and sort by added/deleted/modified status of the files
+    delta / deltajson / deltamd application subcommand reports through UFO file spec validation and
+    filtering of user requested *.ufo source directory filters
 
-    :param gitrepo_path: absolute file path to the root level of the git repository for analysis (automatically detected in ufodiff.app.py)
-    :param ufo_directory_list: list of one or more UFO directories for filter of results (user specified on CL)
-    :param commit_number: the number of requested in the git history to analyze (user specified on CL)
+    Uses DeltaFilepathStringDict object (this module) to (1) filter data by optional user specified *.ufo source filter;
+    (2) maintain final data for reports in the DeltaFilepathStringDict.delta_dict Python dictionary property
+
+    :param gitrepo_path: (string) absolute file path to the root level of the git repository for analysis (automatically detected in ufodiff.app.py)
+    :param ufo_directory_list: (list) list of one or more UFO directories for filter of results (user specified on CL)
+    :param is_commit_test: (boolean) flag for request as test of commit history in the git repository
+    :param commit_number: (string) the number of commits in git commit history for analysis as string (user specified)
+    :param is_branch_test: (boolean) flag for request as test of branch vs. branch in git repository
+    :param compare_branch_name: (string) the branch name requested by user for test vs. current branch (user specified)
     """
     def __init__(self, gitrepo_path, ufo_directory_list, is_commit_test=False, commit_number="0", is_branch_test=False, compare_branch_name=None):
-        self.gitrepo_path = gitrepo_path               # path to root of git repository
-        self.ufo_directory_list = ufo_directory_list   # used to filter results by user defined UFO source directory
-        self.is_commit_test = is_commit_test
-        self.commit_number = commit_number             # user defined number of commits in git history to compare
-        self.is_branch_test = is_branch_test
-        self.compare_branch_name = compare_branch_name
-        self.current_branch_name = ""    # defined in _define_and_validate_ufo_diff_lists if branch test
-        self.ufo = Ufo()                               # Ufo class used for UFO source validations
-        self.git = None
+        self.gitrepo_path = gitrepo_path                # path to root of git repository
+        self.ufo_directory_list = ufo_directory_list    # used to filter results by user defined UFO source directory
+        self.is_commit_test = is_commit_test            # commit test flag
+        self.commit_number = commit_number              # user defined number of commits in git history to compare
+        self.is_branch_test = is_branch_test            # branch test flag
+        self.compare_branch_name = compare_branch_name  # comparison branch requested by user (if branch test)
+        self.current_branch_name = ""                   # defined in _define_and_validate_ufo_diff_lists if branch test
+        self.ufo = Ufo()                                # Ufo class used for UFO source validations
+        self.git = None                                 # GitPython object (instantiated in class method)
         self.delta_fp_string_dict = DeltaFilepathStringDict(ufo_directory_list)  # stores delta file strings in .delta_dict attribute
 
-        self.commit_sha1_list = []
+        self.commit_sha1_list = []                      # used to create dictionaries of report data in class methods
 
         # file string lists
-        self.added_ufo_file_list = []
-        self.modified_ufo_file_list = []
-        self.deleted_ufo_file_list = []
+        self.added_ufo_file_list = []                   # used to create dictionaries of report data in class methods
+        self.modified_ufo_file_list = []                # used to create dictionaries of report data in class methods
+        self.deleted_ufo_file_list = []                 # used to create dictionaries of report data in class methods
 
         # filters files for UFO spec and includes only diff files that are part of spec
-        self._define_and_validate_ufo_diff_lists()
+        self._define_and_validate_ufo_diff_lists()      # defines many of the class properties on object instantiation
 
     # PRIVATE METHODS
     def _define_and_validate_ufo_diff_lists(self):
+        """
+        Defines Delta class properties on instantiation of the object in app.py module
+        :return: no return object
+        """
         # instantiate git Repo object
         repo = Repo(self.gitrepo_path)
         # define class attribute git object
@@ -76,13 +86,30 @@ class Delta(object):
         self._validate_ufo_and_load_dict_from_filepath_strings(added_filepath_list, deleted_filepath_list, modified_filepath_list)
 
     def _add_commit_sha1_to_lists(self):
-        # add the commit SHA1 shortcodes for commits requested by user to the class property list
+        """
+        Adds commit SHA1 short codes for commits requested by user to the Delta.commit_sha1_list property as a Python
+        list.
+
+        :return: no return object
+        """
         sha1_num_commits = "-" + self.commit_number
         sha1_args = [sha1_num_commits, '--pretty=%h']
-        sha1_string = self.git.log(sha1_args)   # git log -[N] --pretty=%h  ===> newline delimited list of SHA1 for N commits
+        sha1_string = self.git.log(sha1_args)  # git log -[N] --pretty=%h ===> newline delimited list of SHA1 x N commit
         self.commit_sha1_list = sha1_string.split("\n")  # do not modify to os.linesep, Win fails tests with this change
 
     def _validate_ufo_and_load_dict_from_filepath_strings(self, added_filepath_list, deleted_filepath_list, modified_filepath_list):
+        """
+        Validates filepaths for detected added, modified, and deleted files against UFO specification and includes
+        valid files in Delta object property lists.  These lists are used to generate the DeltaFilepathStringDict
+        delta_dict Python dictionary that maintains these data in key:value format for report generation.
+
+        UFO validation of files occurs in this class method.
+
+        :param added_filepath_list: (list) files that were added to repository
+        :param deleted_filepath_list: (list) files that were deleted from repository
+        :param modified_filepath_list: (list) files that were modified in repository
+        :return: no return object
+        """
         # test for valid UFO files and add the filepath string to the appropriate class instance attribute
         # load added files list
         if len(added_filepath_list) > 0:
@@ -114,6 +141,10 @@ class Delta(object):
         self.delta_fp_string_dict.add_modified_filepaths(self.modified_ufo_file_list)  # create 'modified' dict key
 
     def _get_delta_text_string(self):
+        """
+        Generates plain text string format for delta subcommand reports.
+        :return: (string) plain text string formatted Python string intended for standard output stream
+        """
         textstring = ""
         if self.is_commit_test is True:                   # include commits if this is an analysis of commit history
             # Write SHA1 commits under examination
@@ -148,9 +179,17 @@ class Delta(object):
         return textstring
 
     def _get_delta_json_string(self):
+        """
+        Generates JSON format for deltajson subcommand reports.
+        :return: (string) JSON formatted Python string intended for standard output stream
+        """
         return json.dumps(self.delta_fp_string_dict.delta_dict)
 
     def _get_delta_markdown_string(self):
+        """
+        Generates Markdown format for deltamd subcommand reports.
+        :return: (string) Markdown formatted Python string intended for standard output stream
+        """
         markdown_string = ""
 
         if self.is_commit_test is True:
@@ -200,6 +239,11 @@ class Delta(object):
     # PUBLIC METHODS
 
     def get_stdout_string(self, write_format=None):
+        """
+        Called by app.py module with write_format type that is dependent upon the user subcommand request
+        :param write_format: (string) options include 'text', 'json', and 'markdown'
+        :return: (string) file change report formatted according to write_format parameter
+        """
         if write_format == 'text':
             return self._get_delta_text_string()
         elif write_format == 'json':
@@ -220,8 +264,6 @@ class DeltaFilepathStringDict(object):
     """
     Object that maintains a Python dictionary of filepaths that meet UFO spec and any user defined UFO path filters
     for use in the generation of standard output strings.
-
-    UFO spec validation occurs here.
 
     User defined UFO directory path filter occurs here.
     """
