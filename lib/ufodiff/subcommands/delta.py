@@ -202,7 +202,7 @@ class Delta(object):
             if len(self.delta_fp_string_dict.delta_dict['branches']) > 0:
                 markdown_string += os.linesep + "## Branches under analysis:" + os.linesep
                 for branch in self.delta_fp_string_dict.delta_dict['branches']:
-                    markdown_string += " -" + branch + os.linesep
+                    markdown_string += "- " + branch + os.linesep
                 markdown_string += os.linesep
 
         # Added files block

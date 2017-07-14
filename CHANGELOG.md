@@ -1,5 +1,9 @@
 ## Changelog
 
+### 0.4.1
+
+- fix for Markdown text error (branch list item formatting)
+
 ### 0.4.0
 
 - added support for branch vs. branch analysis to the `delta`, `deltajson`, and `deltamd` commands
