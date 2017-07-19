@@ -125,6 +125,18 @@ def test_ufodiff_ufo_images_dir_png_file_false():
     assert ufo._is_images_directory_file(test_path_3) is False
 
 
+def test_ufodiff_ufo_images_dir_png_file_via_public_method_call():
+    ufo = Ufo()
+    test_path_1 = os.path.join('source', 'anotherdir', 'images', 'cap_a.png')      # not a UFO source directory (False)
+    test_path_2 = os.path.join('source', 'Test-Regular.ufo', 'image', 'cap_a.png')  # incorrect images dir path (False)
+    test_path_3 = os.path.join('source', 'Test-Regular.ufo', 'images', 'cap_a.jpg')  # jpg file, not png (False)
+    test_path_4 = os.path.join('source', 'Test-Regular.ufo', 'images', 'cap_a.png')  # good path (True)
+    assert ufo.validate_file(test_path_1) is False
+    assert ufo.validate_file(test_path_2) is False
+    assert ufo.validate_file(test_path_3) is False
+    assert ufo.validate_file(test_path_4) is True
+
+
 # UFO v3 data directory/file tests
 def test_ufodiff_ufo_data_dir_file_true():
     ufo = Ufo()
@@ -138,3 +150,12 @@ def test_ufodiff_ufo_data_dir_file_false():
     test_path_2 = os.path.join('source', 'Test-Regular', 'data', 'org.sourcefoundry.coolstuff')  # not ufo dir
     assert ufo._is_data_directory_file(test_path_1) is False
     assert ufo._is_data_directory_file(test_path_2) is False
+
+def test_ufodiff_ufo_data_dir_file_via_public_method_call():
+    ufo = Ufo()
+    test_path_1 = os.path.join('source', 'Test-Regular.ufo', 'datum', 'org.sourcefoundry.coolstuff')  # bad dir path (False)
+    test_path_2 = os.path.join('source', 'Test-Regular', 'data', 'org.sourcefoundry.coolstuff')     # not ufo dir (False)
+    test_path_3 = os.path.join('source', 'Test-Regular.ufo', 'data', 'org.sourcefoundry.coolstuff')  # good path (True)
+    assert ufo.validate_file(test_path_1) is False
+    assert ufo.validate_file(test_path_2) is False
+    assert ufo.validate_file(test_path_3) is True

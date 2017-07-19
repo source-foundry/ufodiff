@@ -51,11 +51,12 @@ class Ufo(object):
                 index += 1
         return False  # if iterate through entire path and never satisfy above test conditions, test fails
 
-
-    # TODO: add images directory validation to this method
-    # TODO: add data directory validation to this method
     def validate_file(self, filepath):
         if os.path.basename(filepath) in self.acceptable_files or filepath[-5:] == ".glif":
+            return True
+        elif self._is_data_directory_file(filepath) is True:    # UFO v3 data directory file test
+            return True
+        elif self._is_images_directory_file(filepath) is True:  # UFO v3 images directory file test
             return True
         else:
             return False
