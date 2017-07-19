@@ -15,8 +15,8 @@ lib_name = 'ufodiff'
 # Version Number
 # ------------------------------------------------------------------------------
 major_version = "0"
-minor_version = "4"
-patch_version = "1"
+minor_version = "5"
+patch_version = "0"
 
 # ------------------------------------------------------------------------------
 # Help String

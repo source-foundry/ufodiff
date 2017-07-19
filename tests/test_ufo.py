@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 import pytest
 
@@ -104,3 +105,21 @@ def test_ufodiff_ufo_diff_filters():
         assert filter_file in filter_test_list
     # test for inclusion of glyph files
     assert '*.glif' in filter_test_list
+
+
+# UFO v3 directories tests
+
+def test_ufodiff_ufo_images_dir_png_file_true():
+    ufo = Ufo()
+    test_path_1 = os.path.join('source', 'Test-Regular.ufo', 'images', 'cap_a.png')
+    assert ufo._is_v3_images_directory_file(test_path_1) is True
+
+
+def test_ufodiff_ufo_images_dir_png_file_false():
+    ufo = Ufo()
+    test_path_1 = os.path.join('source', 'anotherdir', 'images', 'cap_a.png')        # not a UFO source directory
+    test_path_2 = os.path.join('source', 'Test-Regular.ufo', 'image', 'cap_a.png')   # incorrect images dir path
+    test_path_3 = os.path.join('source', 'Test-Regular.ufo', 'images', 'cap_a.jpg')  # jpg file, not png
+    assert ufo._is_v3_images_directory_file(test_path_1) is False
+    assert ufo._is_v3_images_directory_file(test_path_2) is False
+    assert ufo._is_v3_images_directory_file(test_path_3) is False

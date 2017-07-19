@@ -26,7 +26,19 @@ class Ufo(object):
             'layerinfo.plist'
         }
 
-    # TODO: include information in images and data directories of UFO 3 spec
+    def _is_v3_images_directory_file(self, filepath):
+        path_list = filepath.split(os.path.sep)
+        index = 0
+        for path_part in path_list:
+            if path_part == "images":
+                ufo_test_directory = path_list[index - 1]  # .ufo directory should be one directory level above images
+                base_filename = path_list[-1]              # base filename should have .png extension
+                if len(base_filename) > 4 and base_filename[-4:] == '.png' and ufo_test_directory[-4:] == '.ufo':
+                    return True
+            else:
+                index += 1
+        return False  # if iterate through entire path and never satisfy above conditions, test fails
+
     def validate_file(self, filepath):
         if os.path.basename(filepath) in self.acceptable_files or filepath[-5:] == ".glif":
             return True
@@ -60,3 +72,4 @@ class Ufo(object):
             return True
         else:
             return False
+
