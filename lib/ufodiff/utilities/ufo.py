@@ -26,7 +26,7 @@ class Ufo(object):
             'layerinfo.plist'
         }
 
-    def _is_v3_images_directory_file(self, filepath):
+    def _is_images_directory_file(self, filepath):
         path_list = filepath.split(os.path.sep)
         index = 0
         for path_part in path_list:
@@ -34,17 +34,34 @@ class Ufo(object):
                 ufo_test_directory = path_list[index - 1]  # .ufo directory should be one directory level above images
                 base_filename = path_list[-1]              # base filename should have .png extension
                 if len(base_filename) > 4 and base_filename[-4:] == '.png' and ufo_test_directory[-4:] == '.ufo':
-                    return True
+                    return True                            # .png file in *.ufo/images directory = pass
             else:
                 index += 1
-        return False  # if iterate through entire path and never satisfy above conditions, test fails
+        return False  # if iterate through entire path and never satisfy above test conditions, test fails
 
+    def _is_data_directory_file(self, filepath):
+        path_list = filepath.split(os.path.sep)
+        index = 0
+        for path_part in path_list:
+            if path_part == "data":
+                ufo_test_directory = path_list[index - 1]    # .ufo directory should be one level above data
+                if ufo_test_directory[-4:] == '.ufo':        # test for presence of *.ufo directory one level up
+                    return True                              # any file in *.ufo/data directory = pass
+            else:
+                index += 1
+        return False  # if iterate through entire path and never satisfy above test conditions, test fails
+
+
+    # TODO: add images directory validation to this method
+    # TODO: add data directory validation to this method
     def validate_file(self, filepath):
         if os.path.basename(filepath) in self.acceptable_files or filepath[-5:] == ".glif":
             return True
         else:
             return False
 
+    # TODO: add images directory path filter to this method
+    # TODO: add data directory path fileter to this method
     def get_valid_file_filterlist_for_diff(self):
         filter_list = []
         # add valid non-glyph file filters
