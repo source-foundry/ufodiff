@@ -105,6 +105,8 @@ def test_ufodiff_ufo_diff_filters():
         assert filter_file in filter_test_list
     # test for inclusion of glyph files
     assert '*.glif' in filter_test_list
+    assert '*\.ufo/images/*' in filter_test_list
+    assert '*\.ufo/data/*' in filter_test_list
 
 
 # UFO v3 image directory/file tests

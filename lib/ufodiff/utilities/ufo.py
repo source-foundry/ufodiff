@@ -61,14 +61,16 @@ class Ufo(object):
         else:
             return False
 
-    # TODO: add images directory path filter to this method
-    # TODO: add data directory path fileter to this method
     def get_valid_file_filterlist_for_diff(self):
         filter_list = []
-        # add valid non-glyph file filters
+        # add valid non-glyph file wildcards
         for a_file in self.acceptable_files:
             filter_string = "*" + a_file
             filter_list.append(filter_string)
+        # add images directory wildcard (added in UFO v3)
+        filter_list.append('*\.ufo/images/*')
+        # add data directory wildcard (added in UFO v3)
+        filter_list.append('*\.ufo/data/*')
         # add glyph file filters
         filter_list.append('*.glif')
         return filter_list
