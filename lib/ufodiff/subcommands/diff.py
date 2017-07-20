@@ -44,12 +44,22 @@ class Diff(object):
         clean_diff_string = ""
         for a_string in dirty_diffstring_list:
             if a_string.startswith("\x1b[1mdiff --git") or a_string.startswith("diff --git"):
-                pass
+                clean_a_string = a_string.replace('diff --git', '')
+                clean_a_string = clean_a_string.replace(' ', os.linesep)
+                clean_diff_string += clean_a_string + os.linesep
             elif '100644' in a_string:
                 clean_a_string = a_string.replace('100644', '')
+                clean_a_string = clean_a_string.replace('mode', '')
                 clean_diff_string += clean_a_string + os.linesep
             else:
                 clean_diff_string += a_string + os.linesep
+        # remove two lead lines from text diffs (unnecessary duplication of the two files)
+        if "---" in clean_diff_string and "+++" in clean_diff_string:
+            clean_diff_string_list = clean_diff_string.split(os.linesep)
+            purged_head_paths_diff_string_list = clean_diff_string_list[3:]
+            clean_diff_string = ""  # reset the diff string to empty string and start again
+            for line in purged_head_paths_diff_string_list:
+                clean_diff_string += line + os.linesep
         return clean_diff_string
 
     # PUBLIC METHODS
@@ -72,7 +82,7 @@ class Diff(object):
             diff_arg_string = "HEAD~" + commits_number
         elif git_user_diff_string.startswith("branch:"):
             is_branch_test = True
-            diff_arg_string = self.current_branch + ".." + git_user_diff_string[7:]
+            diff_arg_string = git_user_diff_string[7:] + ".." + self.current_branch
         else:
             diff_arg_string = git_user_diff_string
 
