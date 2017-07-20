@@ -29,7 +29,7 @@ MIT License
 Source: https://github.com/source-foundry/ufodiff
 ====================================================
 
-ufodiff is a source file diff tool for typefaces developed with UFO source.
+ufodiff is a UFO source file text diff and file modification reporting tool for collaborative typeface development.
 
 Subcommands:
 
