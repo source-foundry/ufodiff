@@ -1,5 +1,11 @@
 ## Changelog
 
+### 0.5.0
+
+- added support for full UFO v3 spec to all commands
+- fixed bug in the branch diff reports, now comparison branch relative to current branch (comparison..current) as indicated in the documentation
+- updated/cleaned diff report strings
+
 ### 0.4.1
 
 - fix for Markdown text error (branch list item formatting)
