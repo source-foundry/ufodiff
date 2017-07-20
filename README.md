@@ -6,7 +6,7 @@ ufodiff is a command line UFO source file diff tool for collaborative typeface d
 
 It examines git repositories for changes to files that are part of the UFO source spec only (i.e. all file changes in the repository external to the UFO source code are not considered by the tool).  It supports reporting of UFO source file additions, deletions, and modifications as well as colored and uncolored text diffs for UFO source files that were modified between branches or across one or more commits.
 
-UFO version 2 is fully supported in the current release.  UFO version 3 is partially supported and [full support is planned](https://github.com/source-foundry/ufodiff/issues/1).
+UFO versions 2 and 3 are fully supported in the current release.
 
 
 <img src="https://github.com/source-foundry/ufodiff/blob/images/images/diff-delta-crunch.png?raw=true">
