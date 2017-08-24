@@ -1,0 +1,3 @@
+gitpython==2.1.5
+commandlines
+standardstreams
