@@ -1,5 +1,9 @@
 ## Changelog
 
+### 0.5.1
+
+- updated gitpython dependency to version 2.1.7
+
 ### 0.5.0
 
 - added support for full UFO v3 spec to all commands
