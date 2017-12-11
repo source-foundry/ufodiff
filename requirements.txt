@@ -1,3 +1,3 @@
-gitpython==2.1.7
+gitpython==2.1.8
 commandlines==0.4.1
 standardstreams==0.2.0
