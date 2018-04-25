@@ -1,27 +1,32 @@
 ## Changelog
 
-### 0.5.1
+### v0.5.2
+
+- eliminated support for Python v2.6
+- updated gitpython dependency to version 2.1.9
+
+### v0.5.1
 
 - updated gitpython dependency to version 2.1.7
 
-### 0.5.0
+### v0.5.0
 
 - added support for full UFO v3 spec to all commands
 - fixed bug in the branch diff reports, now comparison branch relative to current branch (comparison..current) as indicated in the documentation
 - updated/cleaned diff report strings
 
-### 0.4.1
+### v0.4.1
 
 - fix for Markdown text error (branch list item formatting)
 
-### 0.4.0
+### v0.4.0
 
 - added support for branch vs. branch analysis to the `delta`, `deltajson`, and `deltamd` commands
 - updated `delta`, `deltajson`, and `deltamd` argument validations
 - bugfix for the git diff performed with the `diff` and `diffnc` commands (`branch...branch` to `branch..branch`)
 
 
-### 0.3.0
+### v0.3.0
 
 - `diff` subcommand added to support colored text diffs between UFO spec source files
 - `diffnc` subcommand added to support uncolored text diffs between UFO spec source files
