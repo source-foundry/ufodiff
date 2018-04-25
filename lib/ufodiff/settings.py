@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # ====================================================
-# Copyright 2017 Christopher Simpkins
+# Copyright 2018 Christopher Simpkins
 # MIT License
 # ====================================================
 
@@ -16,7 +16,7 @@ lib_name = 'ufodiff'
 # ------------------------------------------------------------------------------
 major_version = "0"
 minor_version = "5"
-patch_version = "1"
+patch_version = "2"
 
 # ------------------------------------------------------------------------------
 # Help String
@@ -24,7 +24,7 @@ patch_version = "1"
 
 HELP = """====================================================
 ufodiff
-Copyright 2017 Christopher Simpkins
+Copyright 2018 Christopher Simpkins
 MIT License
 Source: https://github.com/source-foundry/ufodiff
 ====================================================
@@ -41,14 +41,14 @@ Subcommands:
    - all
 - diff          --- colored text diff of UFO spec files (only)
 - diffnc        --- uncolored text diff of UFO spec files (only)
-  
+
 Syntax:
   ufodiff delta all [commits:[N] | branch:[name]] <optional UFO filter>
   ufodiff deltajson all [commits:[N] | branch:[name]] <optional UFO filter>
   ufodiff deltamd all [commits:[N] | branch:[name]] <optional UFO filter>
   ufodiff diff [commits:[N] | branch:[name]]
   ufodiff diffnc [commits:[N] | branch:[name]]
-  
+
 Increase or decrease integer value after the `commits:` argument to analyze across that number of commits in the commit history.
 
 Include an existing git branch for comparison with your current branch after the `branch:` argument.
