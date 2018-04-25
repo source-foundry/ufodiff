@@ -66,3 +66,6 @@ target/
 # Project files
 tests/runner.py
 tests/profiler.py
+
+# Test directories
+.pytest_cache
