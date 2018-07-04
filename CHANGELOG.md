@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.5.3
+
+- updated gitpython dependency to version 2.1.10
+- added license to Python wheel distributions
+- removed Travis CI testing, added Semaphore CI testing
+
 ### v0.5.2
 
 - eliminated support for Python v2.6
