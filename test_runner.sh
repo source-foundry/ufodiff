@@ -2,4 +2,4 @@
 
 # test_runner.sh : local testing script
 
-tox -e py27,py36
+tox -e py27,py37
