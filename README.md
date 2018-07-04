@@ -3,6 +3,7 @@
 [![Build Status](https://semaphoreci.com/api/v1/sourcefoundry/ufodiff/branches/master/shields_badge.svg)](https://semaphoreci.com/sourcefoundry/ufodiff)
 [![Build status](https://ci.appveyor.com/api/projects/status/o2vdn1uf7uxau3o7/branch/master?svg=true)](https://ci.appveyor.com/project/chrissimpkins/ufodiff/branch/master)
 [![codecov](https://codecov.io/gh/source-foundry/ufodiff/branch/master/graph/badge.svg)](https://codecov.io/gh/source-foundry/ufodiff)
+[![PyPI](https://img.shields.io/pypi/v/ufodiff.svg)](https://pypi.org/project/ufodiff)
 
 ufodiff is a command line UFO source file diff tool for collaborative typeface development projects.
 
