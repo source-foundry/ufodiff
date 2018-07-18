@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.5.4
+
+- updated gitpython dependency to version 2.1.11
+
 ### v0.5.3
 
 - updated gitpython dependency to version 2.1.10
