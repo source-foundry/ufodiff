@@ -1,5 +1,6 @@
 <img src="https://github.com/source-foundry/ufodiff/blob/images/images/ufodiff-logo-2-crunch.png?raw=true">
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/23e4187ff4474576b7e3334075180202)](https://app.codacy.com/app/SourceFoundry/ufodiff?utm_source=github.com&utm_medium=referral&utm_content=source-foundry/ufodiff&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://semaphoreci.com/api/v1/sourcefoundry/ufodiff/branches/master/shields_badge.svg)](https://semaphoreci.com/sourcefoundry/ufodiff)
 [![Build status](https://ci.appveyor.com/api/projects/status/o2vdn1uf7uxau3o7/branch/master?svg=true)](https://ci.appveyor.com/project/chrissimpkins/ufodiff/branch/master)
 [![codecov](https://codecov.io/gh/source-foundry/ufodiff/branch/master/graph/badge.svg)](https://codecov.io/gh/source-foundry/ufodiff)
