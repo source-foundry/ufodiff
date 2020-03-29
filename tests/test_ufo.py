@@ -14,15 +14,15 @@ from ufodiff.utilities.ufo import Ufo
 # ///////////////////////////////////////////////////////
 
 ufo_acceptable_files = {
-    'metainfo.plist',
-    'fontinfo.plist',
-    'groups.plist',
-    'kerning.plist',
-    'features.fea',
-    'lib.plist',
-    'contents.plist',
-    'layercontents.plist',
-    'layerinfo.plist'
+    "metainfo.plist",
+    "fontinfo.plist",
+    "groups.plist",
+    "kerning.plist",
+    "features.fea",
+    "lib.plist",
+    "contents.plist",
+    "layercontents.plist",
+    "layerinfo.plist",
 }
 
 unacceptable_file = "testing.py"
@@ -57,7 +57,11 @@ def test_ufodiff_ufo_validate_file_false():
 # test nonglyph file check with true conditions
 def test_ufodiff_ufo_nonglyph_true():
     ufo = Ufo()
-    for nonglyph_file in ufo_acceptable_files:     # this file set only includes nonglyph files (i.e. not *.glif)
+    for (
+        nonglyph_file
+    ) in (
+        ufo_acceptable_files
+    ):  # this file set only includes nonglyph files (i.e. not *.glif)
         assert ufo.is_nonglyph_file(nonglyph_file) is True
 
 
@@ -104,24 +108,31 @@ def test_ufodiff_ufo_diff_filters():
         filter_file = "*" + acceptable_file
         assert filter_file in filter_test_list
     # test for inclusion of glyph files
-    assert '*.glif' in filter_test_list
-    assert '*\.ufo/images/*' in filter_test_list
-    assert '*\.ufo/data/*' in filter_test_list
+    assert "*.glif" in filter_test_list
+    assert r"*\.ufo/images/*" in filter_test_list
+    assert r"*\.ufo/data/*" in filter_test_list
 
 
 # UFO v3 image directory/file tests
 
+
 def test_ufodiff_ufo_images_dir_png_file_true():
     ufo = Ufo()
-    test_path_1 = os.path.join('source', 'Test-Regular.ufo', 'images', 'cap_a.png')
+    test_path_1 = os.path.join("source", "Test-Regular.ufo", "images", "cap_a.png")
     assert ufo._is_images_directory_file(test_path_1) is True
 
 
 def test_ufodiff_ufo_images_dir_png_file_false():
     ufo = Ufo()
-    test_path_1 = os.path.join('source', 'anotherdir', 'images', 'cap_a.png')        # not a UFO source directory
-    test_path_2 = os.path.join('source', 'Test-Regular.ufo', 'image', 'cap_a.png')   # incorrect images dir path
-    test_path_3 = os.path.join('source', 'Test-Regular.ufo', 'images', 'cap_a.jpg')  # jpg file, not png
+    test_path_1 = os.path.join(
+        "source", "anotherdir", "images", "cap_a.png"
+    )  # not a UFO source directory
+    test_path_2 = os.path.join(
+        "source", "Test-Regular.ufo", "image", "cap_a.png"
+    )  # incorrect images dir path
+    test_path_3 = os.path.join(
+        "source", "Test-Regular.ufo", "images", "cap_a.jpg"
+    )  # jpg file, not png
     assert ufo._is_images_directory_file(test_path_1) is False
     assert ufo._is_images_directory_file(test_path_2) is False
     assert ufo._is_images_directory_file(test_path_3) is False
@@ -129,10 +140,18 @@ def test_ufodiff_ufo_images_dir_png_file_false():
 
 def test_ufodiff_ufo_images_dir_png_file_via_public_method_call():
     ufo = Ufo()
-    test_path_1 = os.path.join('source', 'anotherdir', 'images', 'cap_a.png')      # not a UFO source directory (False)
-    test_path_2 = os.path.join('source', 'Test-Regular.ufo', 'image', 'cap_a.png')  # incorrect images dir path (False)
-    test_path_3 = os.path.join('source', 'Test-Regular.ufo', 'images', 'cap_a.jpg')  # jpg file, not png (False)
-    test_path_4 = os.path.join('source', 'Test-Regular.ufo', 'images', 'cap_a.png')  # good path (True)
+    test_path_1 = os.path.join(
+        "source", "anotherdir", "images", "cap_a.png"
+    )  # not a UFO source directory (False)
+    test_path_2 = os.path.join(
+        "source", "Test-Regular.ufo", "image", "cap_a.png"
+    )  # incorrect images dir path (False)
+    test_path_3 = os.path.join(
+        "source", "Test-Regular.ufo", "images", "cap_a.jpg"
+    )  # jpg file, not png (False)
+    test_path_4 = os.path.join(
+        "source", "Test-Regular.ufo", "images", "cap_a.png"
+    )  # good path (True)
     assert ufo.validate_file(test_path_1) is False
     assert ufo.validate_file(test_path_2) is False
     assert ufo.validate_file(test_path_3) is False
@@ -142,22 +161,35 @@ def test_ufodiff_ufo_images_dir_png_file_via_public_method_call():
 # UFO v3 data directory/file tests
 def test_ufodiff_ufo_data_dir_file_true():
     ufo = Ufo()
-    test_path_1 = os.path.join('source', 'Test-Regular.ufo', 'data', 'org.sourcefoundry.coolstuff')
+    test_path_1 = os.path.join(
+        "source", "Test-Regular.ufo", "data", "org.sourcefoundry.coolstuff"
+    )
     assert ufo._is_data_directory_file(test_path_1) is True
 
 
 def test_ufodiff_ufo_data_dir_file_false():
     ufo = Ufo()
-    test_path_1 = os.path.join('source', 'Test-Regular.ufo', 'datum', 'org.sourcefoundry.coolstuff')  # bad dir path
-    test_path_2 = os.path.join('source', 'Test-Regular', 'data', 'org.sourcefoundry.coolstuff')  # not ufo dir
+    test_path_1 = os.path.join(
+        "source", "Test-Regular.ufo", "datum", "org.sourcefoundry.coolstuff"
+    )  # bad dir path
+    test_path_2 = os.path.join(
+        "source", "Test-Regular", "data", "org.sourcefoundry.coolstuff"
+    )  # not ufo dir
     assert ufo._is_data_directory_file(test_path_1) is False
     assert ufo._is_data_directory_file(test_path_2) is False
 
+
 def test_ufodiff_ufo_data_dir_file_via_public_method_call():
     ufo = Ufo()
-    test_path_1 = os.path.join('source', 'Test-Regular.ufo', 'datum', 'org.sourcefoundry.coolstuff')  # bad dir path (False)
-    test_path_2 = os.path.join('source', 'Test-Regular', 'data', 'org.sourcefoundry.coolstuff')     # not ufo dir (False)
-    test_path_3 = os.path.join('source', 'Test-Regular.ufo', 'data', 'org.sourcefoundry.coolstuff')  # good path (True)
+    test_path_1 = os.path.join(
+        "source", "Test-Regular.ufo", "datum", "org.sourcefoundry.coolstuff"
+    )  # bad dir path (False)
+    test_path_2 = os.path.join(
+        "source", "Test-Regular", "data", "org.sourcefoundry.coolstuff"
+    )  # not ufo dir (False)
+    test_path_3 = os.path.join(
+        "source", "Test-Regular.ufo", "data", "org.sourcefoundry.coolstuff"
+    )  # good path (True)
     assert ufo.validate_file(test_path_1) is False
     assert ufo.validate_file(test_path_2) is False
     assert ufo.validate_file(test_path_3) is True

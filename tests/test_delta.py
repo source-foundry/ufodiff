@@ -12,42 +12,43 @@ from ufodiff.subcommands.delta import Delta, DeltaFilepathStringDict
 
 # creates a temporary new git branch (testing_branch) for testing
 def make_testing_branch():
-    repo = Repo('.')
+    repo = Repo(".")
     gitobj = repo.git
     # create 'test' branch if it doesn't exist so that it can be used for tests in this module
     git_branch_string = gitobj.branch()
     git_branch_list = git_branch_string.split("\n")
     clean_branch_list = []
     for branch in git_branch_list:
-        branch = branch.replace('*', '')
-        branch = branch.replace(' ', '')
+        branch = branch.replace("*", "")
+        branch = branch.replace(" ", "")
         clean_branch_list.append(branch)
-    if 'testing_branch' in clean_branch_list:
+    if "testing_branch" in clean_branch_list:
         pass
     else:
-        gitobj.branch('testing_branch')
+        gitobj.branch("testing_branch")
+
 
 # deletes the temporary new git branch (testing_branch) for testing
 def delete_testing_branch():
-    repo = Repo('.')
+    repo = Repo(".")
     gitobj = repo.git
     # create 'test' branch if it doesn't exist so that it can be used for tests in this module
     git_branch_string = gitobj.branch()
     git_branch_list = git_branch_string.split("\n")
     clean_branch_list = []
     for branch in git_branch_list:
-        branch = branch.replace('*', '')
-        branch = branch.replace(' ', '')
+        branch = branch.replace("*", "")
+        branch = branch.replace(" ", "")
         clean_branch_list.append(branch)
-    if 'testing_branch' in clean_branch_list:
-        gitobj.branch('-d', 'testing_branch')
+    if "testing_branch" in clean_branch_list:
+        gitobj.branch("-d", "testing_branch")
 
 
 def get_mock_added_list():
     added_list = []
     added_list.append(os.path.join("source", "Test-Regular.ufo", "metainfo.plist"))
     added_list.append(os.path.join("source", "Test-Italic.ufo", "metainfo.plist"))
-    added_list.append('README.md')
+    added_list.append("README.md")
     return added_list
 
 
@@ -55,7 +56,7 @@ def get_mock_deleted_list():
     deleted_list = []
     deleted_list.append(os.path.join("source", "Test-Regular.ufo", "fontinfo.plist"))
     deleted_list.append(os.path.join("source", "Test-Italic.ufo", "fontinfo.plist"))
-    deleted_list.append('CHANGELOG.md')
+    deleted_list.append("CHANGELOG.md")
     return deleted_list
 
 
@@ -63,9 +64,8 @@ def get_mock_modified_list():
     modified_list = []
     modified_list.append(os.path.join("source", "Test-Regular.ufo", "features.fea"))
     modified_list.append(os.path.join("source", "Test-Italic.ufo", "features.fea"))
-    modified_list.append('CONTRIBUTING.md')
+    modified_list.append("CONTRIBUTING.md")
     return modified_list
-
 
 
 # ///////////////////////////////////////////////////////
@@ -74,9 +74,10 @@ def get_mock_modified_list():
 #
 # ///////////////////////////////////////////////////////
 
+
 def test_ufodiff_delta_class_instantiation_commit():
     try:
-        deltaobj = Delta('.', [], is_commit_test=True, commit_number='2')
+        deltaobj = Delta(".", [], is_commit_test=True, commit_number="2")
         assert deltaobj.is_commit_test is True
         assert deltaobj.is_branch_test is False
         assert deltaobj.commit_number == "2"
@@ -90,7 +91,9 @@ def test_ufodiff_delta_class_instantiation_branch():
     make_testing_branch()
 
     try:
-        deltaobj = Delta('.', [], is_branch_test=True, compare_branch_name='testing_branch')
+        deltaobj = Delta(
+            ".", [], is_branch_test=True, compare_branch_name="testing_branch"
+        )
         assert deltaobj.is_commit_test is False
         assert deltaobj.is_branch_test is True
         assert deltaobj.compare_branch_name == "testing_branch"
@@ -105,7 +108,9 @@ def test_ufodiff_delta_class_instantiation_branch():
 
 def test_ufodiff_delta_class_instantiation_commit_with_ufo_filter():
     try:
-        deltaobj = Delta('.', ['Font-Regular.ufo'], is_commit_test=True, commit_number='2')
+        deltaobj = Delta(
+            ".", ["Font-Regular.ufo"], is_commit_test=True, commit_number="2"
+        )
         assert deltaobj.is_commit_test is True
         assert deltaobj.is_branch_test is False
         assert deltaobj.commit_number == "2"
@@ -120,7 +125,12 @@ def test_ufodiff_delta_class_instantiation_branch_with_ufo_filter():
     make_testing_branch()
 
     try:
-        deltaobj = Delta('.', ['Font-Regular.ufo'], is_branch_test=True, compare_branch_name='testing_branch')
+        deltaobj = Delta(
+            ".",
+            ["Font-Regular.ufo"],
+            is_branch_test=True,
+            compare_branch_name="testing_branch",
+        )
         assert deltaobj.is_commit_test is False
         assert deltaobj.is_branch_test is True
         assert deltaobj.compare_branch_name == "testing_branch"
@@ -135,7 +145,7 @@ def test_ufodiff_delta_class_instantiation_branch_with_ufo_filter():
 
 
 def test_ufodiff_delta_add_commit_sha1_method():
-    deltaobj = Delta('.', ['Font-Regular.ufo'], is_commit_test=True, commit_number='1')
+    deltaobj = Delta(".", ["Font-Regular.ufo"], is_commit_test=True, commit_number="1")
     # clear sha1 list because defined on instantiation
     deltaobj.commit_sha1_list = []
     assert len(deltaobj.commit_sha1_list) == 0
@@ -144,7 +154,7 @@ def test_ufodiff_delta_add_commit_sha1_method():
 
 
 def test_ufodiff_delta_validate_ufo_load_dict_method_commit_correct_lists_dicts():
-    deltaobj = Delta('.', [], is_commit_test=True, commit_number='1')
+    deltaobj = Delta(".", [], is_commit_test=True, commit_number="1")
     # clear lists that were created on instantiation of the object for testing
     deltaobj.added_ufo_file_list = []
     deltaobj.deleted_ufo_file_list = []
@@ -155,43 +165,85 @@ def test_ufodiff_delta_validate_ufo_load_dict_method_commit_correct_lists_dicts(
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list, modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
     # confirm UFO validations worked
     # added
-    assert os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in deltaobj.added_ufo_file_list
-    assert os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in deltaobj.added_ufo_file_list
-    assert ('README.md' in deltaobj.added_ufo_file_list) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+        in deltaobj.added_ufo_file_list
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "metainfo.plist")
+        in deltaobj.added_ufo_file_list
+    )
+    assert ("README.md" in deltaobj.added_ufo_file_list) is False
 
     # deleted
-    assert os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in deltaobj.deleted_ufo_file_list
-    assert os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in deltaobj.deleted_ufo_file_list
-    assert ('CHANGELOG.md' in deltaobj.deleted_ufo_file_list) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "fontinfo.plist")
+        in deltaobj.deleted_ufo_file_list
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "fontinfo.plist")
+        in deltaobj.deleted_ufo_file_list
+    )
+    assert ("CHANGELOG.md" in deltaobj.deleted_ufo_file_list) is False
 
     # modified
-    assert os.path.join("source", "Test-Regular.ufo", "features.fea") in deltaobj.modified_ufo_file_list
-    assert os.path.join("source", "Test-Italic.ufo", "features.fea") in deltaobj.modified_ufo_file_list
-    assert ('CONTRIBUTING.md' in deltaobj.modified_ufo_file_list) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "features.fea")
+        in deltaobj.modified_ufo_file_list
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "features.fea")
+        in deltaobj.modified_ufo_file_list
+    )
+    assert ("CONTRIBUTING.md" in deltaobj.modified_ufo_file_list) is False
 
     # confirm dict keys hold correct file paths
     # added
-    assert os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in deltaobj.delta_fp_string_dict.delta_dict['added']
-    assert os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in deltaobj.delta_fp_string_dict.delta_dict['added']
-    assert ('README.md' in deltaobj.delta_fp_string_dict.delta_dict['added']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+        in deltaobj.delta_fp_string_dict.delta_dict["added"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "metainfo.plist")
+        in deltaobj.delta_fp_string_dict.delta_dict["added"]
+    )
+    assert ("README.md" in deltaobj.delta_fp_string_dict.delta_dict["added"]) is False
 
     # deleted
-    assert os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in deltaobj.delta_fp_string_dict.delta_dict['deleted']
-    assert os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in deltaobj.delta_fp_string_dict.delta_dict['deleted']
-    assert ('CHANGELOG.md' in deltaobj.delta_fp_string_dict.delta_dict['deleted']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "fontinfo.plist")
+        in deltaobj.delta_fp_string_dict.delta_dict["deleted"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "fontinfo.plist")
+        in deltaobj.delta_fp_string_dict.delta_dict["deleted"]
+    )
+    assert (
+        "CHANGELOG.md" in deltaobj.delta_fp_string_dict.delta_dict["deleted"]
+    ) is False
 
     # modified
-    assert os.path.join("source", "Test-Regular.ufo", "features.fea") in deltaobj.delta_fp_string_dict.delta_dict['modified']
-    assert os.path.join("source", "Test-Italic.ufo", "features.fea") in deltaobj.delta_fp_string_dict.delta_dict['modified']
-    assert ('CONTRIBUTING.md' in deltaobj.delta_fp_string_dict.delta_dict['modified']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "features.fea")
+        in deltaobj.delta_fp_string_dict.delta_dict["modified"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "features.fea")
+        in deltaobj.delta_fp_string_dict.delta_dict["modified"]
+    )
+    assert (
+        "CONTRIBUTING.md" in deltaobj.delta_fp_string_dict.delta_dict["modified"]
+    ) is False
 
 
 def test_ufodiff_delta_validate_ufo_load_dict_method_commit_correct_dict_keys():
-    deltaobj = Delta('.', [], is_commit_test=True, commit_number='1')
+    deltaobj = Delta(".", [], is_commit_test=True, commit_number="1")
     # clear lists that were created on instantiation of the object for testing
     deltaobj.added_ufo_file_list = []
     deltaobj.deleted_ufo_file_list = []
@@ -202,23 +254,24 @@ def test_ufodiff_delta_validate_ufo_load_dict_method_commit_correct_dict_keys():
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list,
-                                                               modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
     # confirm delta dictionary class object property properly defined with filepaths
     delta_dict = deltaobj.delta_fp_string_dict.delta_dict
 
-    assert 'added' in delta_dict.keys()
-    assert 'deleted' in delta_dict.keys()
-    assert 'modified' in delta_dict.keys()
-    assert 'commits' in delta_dict.keys()
-    assert ('branches' in delta_dict.keys()) is False
+    assert "added" in delta_dict.keys()
+    assert "deleted" in delta_dict.keys()
+    assert "modified" in delta_dict.keys()
+    assert "commits" in delta_dict.keys()
+    assert ("branches" in delta_dict.keys()) is False
 
 
 def test_ufodiff_delta_validate_ufo_load_dict_method_branch_correct_lists_dicts():
     make_testing_branch()
 
-    deltaobj = Delta('.', [], is_branch_test=True, compare_branch_name='testing_branch')
+    deltaobj = Delta(".", [], is_branch_test=True, compare_branch_name="testing_branch")
     # clear lists that were created on instantiation of the object for testing
     deltaobj.added_ufo_file_list = []
     deltaobj.deleted_ufo_file_list = []
@@ -229,39 +282,81 @@ def test_ufodiff_delta_validate_ufo_load_dict_method_branch_correct_lists_dicts(
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list, modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
     # confirm UFO validations worked
     # added
-    assert os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in deltaobj.added_ufo_file_list
-    assert os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in deltaobj.added_ufo_file_list
-    assert ('README.md' in deltaobj.added_ufo_file_list) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+        in deltaobj.added_ufo_file_list
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "metainfo.plist")
+        in deltaobj.added_ufo_file_list
+    )
+    assert ("README.md" in deltaobj.added_ufo_file_list) is False
 
     # deleted
-    assert os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in deltaobj.deleted_ufo_file_list
-    assert os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in deltaobj.deleted_ufo_file_list
-    assert ('CHANGELOG.md' in deltaobj.deleted_ufo_file_list) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "fontinfo.plist")
+        in deltaobj.deleted_ufo_file_list
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "fontinfo.plist")
+        in deltaobj.deleted_ufo_file_list
+    )
+    assert ("CHANGELOG.md" in deltaobj.deleted_ufo_file_list) is False
 
     # modified
-    assert os.path.join("source", "Test-Regular.ufo", "features.fea") in deltaobj.modified_ufo_file_list
-    assert os.path.join("source", "Test-Italic.ufo", "features.fea") in deltaobj.modified_ufo_file_list
-    assert ('CONTRIBUTING.md' in deltaobj.modified_ufo_file_list) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "features.fea")
+        in deltaobj.modified_ufo_file_list
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "features.fea")
+        in deltaobj.modified_ufo_file_list
+    )
+    assert ("CONTRIBUTING.md" in deltaobj.modified_ufo_file_list) is False
 
     # confirm dict keys hold correct file paths
     # added
-    assert os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in deltaobj.delta_fp_string_dict.delta_dict['added']
-    assert os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in deltaobj.delta_fp_string_dict.delta_dict['added']
-    assert ('README.md' in deltaobj.delta_fp_string_dict.delta_dict['added']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+        in deltaobj.delta_fp_string_dict.delta_dict["added"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "metainfo.plist")
+        in deltaobj.delta_fp_string_dict.delta_dict["added"]
+    )
+    assert ("README.md" in deltaobj.delta_fp_string_dict.delta_dict["added"]) is False
 
     # deleted
-    assert os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in deltaobj.delta_fp_string_dict.delta_dict['deleted']
-    assert os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in deltaobj.delta_fp_string_dict.delta_dict['deleted']
-    assert ('CHANGELOG.md' in deltaobj.delta_fp_string_dict.delta_dict['deleted']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "fontinfo.plist")
+        in deltaobj.delta_fp_string_dict.delta_dict["deleted"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "fontinfo.plist")
+        in deltaobj.delta_fp_string_dict.delta_dict["deleted"]
+    )
+    assert (
+        "CHANGELOG.md" in deltaobj.delta_fp_string_dict.delta_dict["deleted"]
+    ) is False
 
     # modified
-    assert os.path.join("source", "Test-Regular.ufo", "features.fea") in deltaobj.delta_fp_string_dict.delta_dict['modified']
-    assert os.path.join("source", "Test-Italic.ufo", "features.fea") in deltaobj.delta_fp_string_dict.delta_dict['modified']
-    assert ('CONTRIBUTING.md' in deltaobj.delta_fp_string_dict.delta_dict['modified']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "features.fea")
+        in deltaobj.delta_fp_string_dict.delta_dict["modified"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "features.fea")
+        in deltaobj.delta_fp_string_dict.delta_dict["modified"]
+    )
+    assert (
+        "CONTRIBUTING.md" in deltaobj.delta_fp_string_dict.delta_dict["modified"]
+    ) is False
 
     delete_testing_branch()
 
@@ -269,7 +364,7 @@ def test_ufodiff_delta_validate_ufo_load_dict_method_branch_correct_lists_dicts(
 def test_ufodiff_delta_validate_ufo_load_dict_method_branch_correct_dict_keys():
     make_testing_branch()
 
-    deltaobj = Delta('.', [], is_branch_test=True, compare_branch_name='testing_branch')
+    deltaobj = Delta(".", [], is_branch_test=True, compare_branch_name="testing_branch")
     # clear lists that were created on instantiation of the object for testing
     deltaobj.added_ufo_file_list = []
     deltaobj.deleted_ufo_file_list = []
@@ -280,33 +375,35 @@ def test_ufodiff_delta_validate_ufo_load_dict_method_branch_correct_dict_keys():
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list,
-                                                               modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
     # confirm delta dictionary class object property properly defined with filepaths
     delta_dict = deltaobj.delta_fp_string_dict.delta_dict
 
-    assert 'added' in delta_dict.keys()
-    assert 'deleted' in delta_dict.keys()
-    assert 'modified' in delta_dict.keys()
-    assert 'branches' in delta_dict.keys()
-    assert ('commits' in delta_dict.keys()) is False
+    assert "added" in delta_dict.keys()
+    assert "deleted" in delta_dict.keys()
+    assert "modified" in delta_dict.keys()
+    assert "branches" in delta_dict.keys()
+    assert ("commits" in delta_dict.keys()) is False
 
     delete_testing_branch()
 
 
 def test_ufodiff_delta_get_delta_text_string_method_commit():
-    deltaobj = Delta('.', [], is_commit_test=True, commit_number='1')
+    deltaobj = Delta(".", [], is_commit_test=True, commit_number="1")
 
     added_testfile_list = get_mock_added_list()
     deleted_testfile_list = get_mock_deleted_list()
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list,
-                                                               modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
-    response_string = deltaobj.get_stdout_string(write_format='text')
+    response_string = deltaobj.get_stdout_string(write_format="text")
     # assert len(response_string) > 0
     assert "Commit history SHA1 for this analysis:" in response_string
 
@@ -314,17 +411,18 @@ def test_ufodiff_delta_get_delta_text_string_method_commit():
 def test_ufodiff_delta_get_delta_text_string_method_branch():
     make_testing_branch()
 
-    deltaobj = Delta('.', [], is_branch_test=True, compare_branch_name='testing_branch')
+    deltaobj = Delta(".", [], is_branch_test=True, compare_branch_name="testing_branch")
 
     added_testfile_list = get_mock_added_list()
     deleted_testfile_list = get_mock_deleted_list()
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list,
-                                                               modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
-    response_string = deltaobj.get_stdout_string(write_format='text')
+    response_string = deltaobj.get_stdout_string(write_format="text")
     # assert len(response_string) > 0
     assert "Branches under analysis:" in response_string
 
@@ -332,137 +430,191 @@ def test_ufodiff_delta_get_delta_text_string_method_branch():
 
 
 def test_ufodiff_delta_get_delta_json_string_method_commit():
-    deltaobj = Delta('.', [], is_commit_test=True, commit_number='1')
+    deltaobj = Delta(".", [], is_commit_test=True, commit_number="1")
 
     added_testfile_list = get_mock_added_list()
     deleted_testfile_list = get_mock_deleted_list()
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list,
-                                                               modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
-    response_string = deltaobj.get_stdout_string(write_format='json')
+    response_string = deltaobj.get_stdout_string(write_format="json")
 
     json_obj = json.loads(response_string)
     assert len(response_string) > 0
-    assert len(json_obj['commits']) > 0
+    assert len(json_obj["commits"]) > 0
 
     # added
-    assert os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in json_obj['added']
-    assert os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in json_obj['added']
-    assert ('README.md' in json_obj['added']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+        in json_obj["added"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in json_obj["added"]
+    )
+    assert ("README.md" in json_obj["added"]) is False
 
     # deleted
-    assert os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in json_obj['deleted']
-    assert os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in json_obj['deleted']
-    assert ('CHANGELOG.md' in json_obj['deleted']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "fontinfo.plist")
+        in json_obj["deleted"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "fontinfo.plist")
+        in json_obj["deleted"]
+    )
+    assert ("CHANGELOG.md" in json_obj["deleted"]) is False
 
     # modified
-    assert os.path.join("source", "Test-Regular.ufo", "features.fea") in json_obj['modified']
-    assert os.path.join("source", "Test-Italic.ufo", "features.fea") in json_obj['modified']
-    assert ('CONTRIBUTING.md' in json_obj['modified']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "features.fea")
+        in json_obj["modified"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "features.fea")
+        in json_obj["modified"]
+    )
+    assert ("CONTRIBUTING.md" in json_obj["modified"]) is False
 
 
 def test_ufodiff_delta_get_delta_json_string_method_branch():
     make_testing_branch()
 
-    deltaobj = Delta('.', [], is_branch_test=True, compare_branch_name='testing_branch')
+    deltaobj = Delta(".", [], is_branch_test=True, compare_branch_name="testing_branch")
 
     added_testfile_list = get_mock_added_list()
     deleted_testfile_list = get_mock_deleted_list()
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list,
-                                                               modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
-    response_string = deltaobj.get_stdout_string(write_format='json')
+    response_string = deltaobj.get_stdout_string(write_format="json")
 
     json_obj = json.loads(response_string)
     assert len(response_string) > 0
-    assert len(json_obj['branches']) > 0
+    assert len(json_obj["branches"]) > 0
 
     # added
-    assert os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in json_obj['added']
-    assert os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in json_obj['added']
-    assert ('README.md' in json_obj['added']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+        in json_obj["added"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in json_obj["added"]
+    )
+    assert ("README.md" in json_obj["added"]) is False
 
     # deleted
-    assert os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in json_obj['deleted']
-    assert os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in json_obj['deleted']
-    assert ('CHANGELOG.md' in json_obj['deleted']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "fontinfo.plist")
+        in json_obj["deleted"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "fontinfo.plist")
+        in json_obj["deleted"]
+    )
+    assert ("CHANGELOG.md" in json_obj["deleted"]) is False
 
     # modified
-    assert os.path.join("source", "Test-Regular.ufo", "features.fea") in json_obj['modified']
-    assert os.path.join("source", "Test-Italic.ufo", "features.fea") in json_obj['modified']
-    assert ('CONTRIBUTING.md' in json_obj['modified']) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "features.fea")
+        in json_obj["modified"]
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "features.fea")
+        in json_obj["modified"]
+    )
+    assert ("CONTRIBUTING.md" in json_obj["modified"]) is False
 
     delete_testing_branch()
 
 
 def test_ufodiff_delta_get_delta_markdown_string_method_commit():
-    deltaobj = Delta('.', [], is_commit_test=True, commit_number='1')
+    deltaobj = Delta(".", [], is_commit_test=True, commit_number="1")
 
     added_testfile_list = get_mock_added_list()
     deleted_testfile_list = get_mock_deleted_list()
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list,
-                                                               modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
-    response_string = deltaobj.get_stdout_string(write_format='markdown')
+    response_string = deltaobj.get_stdout_string(write_format="markdown")
 
     assert len(response_string) > 0
 
     # added
-    assert os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in response_string
-    assert os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in response_string
-    assert ('README.md' in response_string) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in response_string
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in response_string
+    )
+    assert ("README.md" in response_string) is False
 
     # deleted
-    assert os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in response_string
-    assert os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in response_string
-    assert ('CHANGELOG.md' in response_string) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in response_string
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in response_string
+    )
+    assert ("CHANGELOG.md" in response_string) is False
 
     # modified
     assert os.path.join("source", "Test-Regular.ufo", "features.fea") in response_string
     assert os.path.join("source", "Test-Italic.ufo", "features.fea") in response_string
-    assert ('CONTRIBUTING.md' in response_string) is False
+    assert ("CONTRIBUTING.md" in response_string) is False
 
 
 def test_ufodiff_delta_get_delta_markdown_string_method_branch():
     make_testing_branch()
 
-    deltaobj = Delta('.', [], is_branch_test=True, compare_branch_name='testing_branch')
+    deltaobj = Delta(".", [], is_branch_test=True, compare_branch_name="testing_branch")
 
     added_testfile_list = get_mock_added_list()
     deleted_testfile_list = get_mock_deleted_list()
     modified_testfile_list = get_mock_modified_list()
 
     # execute the method to be tested
-    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(added_testfile_list, deleted_testfile_list,
-                                                               modified_testfile_list)
+    deltaobj._validate_ufo_and_load_dict_from_filepath_strings(
+        added_testfile_list, deleted_testfile_list, modified_testfile_list
+    )
 
-    response_string = deltaobj.get_stdout_string(write_format='markdown')
+    response_string = deltaobj.get_stdout_string(write_format="markdown")
 
     assert len(response_string) > 0
 
     # added
-    assert os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in response_string
-    assert os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in response_string
-    assert ('README.md' in response_string) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist") in response_string
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "metainfo.plist") in response_string
+    )
+    assert ("README.md" in response_string) is False
 
     # deleted
-    assert os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in response_string
-    assert os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in response_string
-    assert ('CHANGELOG.md' in response_string) is False
+    assert (
+        os.path.join("source", "Test-Regular.ufo", "fontinfo.plist") in response_string
+    )
+    assert (
+        os.path.join("source", "Test-Italic.ufo", "fontinfo.plist") in response_string
+    )
+    assert ("CHANGELOG.md" in response_string) is False
 
     # modified
     assert os.path.join("source", "Test-Regular.ufo", "features.fea") in response_string
     assert os.path.join("source", "Test-Italic.ufo", "features.fea") in response_string
-    assert ('CONTRIBUTING.md' in response_string) is False
+    assert ("CONTRIBUTING.md" in response_string) is False
 
     delete_testing_branch()
 
@@ -473,25 +625,28 @@ def test_ufodiff_delta_get_delta_markdown_string_method_branch():
 #
 # ///////////////////////////////////////////////////////
 
-def test_ufodiff_dfpd_instantiation_empty_fp_list():   # user did not specify UFO source filter so list arg empty
+
+def test_ufodiff_dfpd_instantiation_empty_fp_list():  # user did not specify UFO source filter so list arg empty
     dfpd = DeltaFilepathStringDict([])
     assert len(dfpd.ufo_directory_list) == 0
 
 
 def test_ufodiff_dfpd_instantiation_nonempty_fp_list():  # user did specify UFO source filter so list arg not empty
-    filepath_list = ['Font-Regular.ufo', 'Font-Italic.ufo']
+    filepath_list = ["Font-Regular.ufo", "Font-Italic.ufo"]
     dfpd = DeltaFilepathStringDict(filepath_list)
     assert len(dfpd.ufo_directory_list) == 2
-    assert 'Font-Regular.ufo' in dfpd.ufo_directory_list
-    assert 'Font-Italic.ufo' in dfpd.ufo_directory_list
+    assert "Font-Regular.ufo" in dfpd.ufo_directory_list
+    assert "Font-Italic.ufo" in dfpd.ufo_directory_list
 
 
 def test_ufodiff_dfpd_add_added_fp_method():
     dfpd = DeltaFilepathStringDict([])
-    dfpd2 = DeltaFilepathStringDict(['Test-Regular.ufo'])
-    dfpd3 = DeltaFilepathStringDict(['Test-Regular.ufo'])
-    added_list = [os.path.join('source', 'NotPath-Regular.ufo', 'fontinfo.plist')]
-    added_filterpath_list = [os.path.join('source', 'Test-Regular.ufo', 'metainfo.plist')]
+    dfpd2 = DeltaFilepathStringDict(["Test-Regular.ufo"])
+    dfpd3 = DeltaFilepathStringDict(["Test-Regular.ufo"])
+    added_list = [os.path.join("source", "NotPath-Regular.ufo", "fontinfo.plist")]
+    added_filterpath_list = [
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+    ]
 
     # this one tests when no user requested source filter applied
     dfpd.add_added_filepaths(added_list)
@@ -500,21 +655,27 @@ def test_ufodiff_dfpd_add_added_fp_method():
     # this one tests when file path is on source filter path, should include in the dictionary
     dfpd3.add_added_filepaths(added_filterpath_list)
 
-    assert len(dfpd.delta_dict['added']) == 1
-    assert dfpd.delta_dict['added'][0] == os.path.join('source', 'NotPath-Regular.ufo', 'fontinfo.plist')
+    assert len(dfpd.delta_dict["added"]) == 1
+    assert dfpd.delta_dict["added"][0] == os.path.join(
+        "source", "NotPath-Regular.ufo", "fontinfo.plist"
+    )
 
-    assert len(dfpd2.delta_dict['added']) == 0
+    assert len(dfpd2.delta_dict["added"]) == 0
 
-    assert len(dfpd3.delta_dict['added']) == 1
-    assert dfpd3.delta_dict['added'][0] == os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+    assert len(dfpd3.delta_dict["added"]) == 1
+    assert dfpd3.delta_dict["added"][0] == os.path.join(
+        "source", "Test-Regular.ufo", "metainfo.plist"
+    )
 
 
 def test_ufodiff_dfpd_add_deleted_fp_method():
     dfpd = DeltaFilepathStringDict([])
-    dfpd2 = DeltaFilepathStringDict(['Test-Regular.ufo'])
-    dfpd3 = DeltaFilepathStringDict(['Test-Regular.ufo'])
-    deleted_list = [os.path.join('source', 'NotPath-Regular.ufo', 'fontinfo.plist')]
-    deleted_filterpath_list = [os.path.join('source', 'Test-Regular.ufo', 'metainfo.plist')]
+    dfpd2 = DeltaFilepathStringDict(["Test-Regular.ufo"])
+    dfpd3 = DeltaFilepathStringDict(["Test-Regular.ufo"])
+    deleted_list = [os.path.join("source", "NotPath-Regular.ufo", "fontinfo.plist")]
+    deleted_filterpath_list = [
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+    ]
 
     # this one tests when no user requested source filter applied
     dfpd.add_deleted_filepaths(deleted_list)
@@ -523,21 +684,27 @@ def test_ufodiff_dfpd_add_deleted_fp_method():
     # this one tests when file path is on source filter path, should include in the dictionary
     dfpd3.add_deleted_filepaths(deleted_filterpath_list)
 
-    assert len(dfpd.delta_dict['deleted']) == 1
-    assert dfpd.delta_dict['deleted'][0] == os.path.join('source', 'NotPath-Regular.ufo', 'fontinfo.plist')
+    assert len(dfpd.delta_dict["deleted"]) == 1
+    assert dfpd.delta_dict["deleted"][0] == os.path.join(
+        "source", "NotPath-Regular.ufo", "fontinfo.plist"
+    )
 
-    assert len(dfpd2.delta_dict['deleted']) == 0
+    assert len(dfpd2.delta_dict["deleted"]) == 0
 
-    assert len(dfpd3.delta_dict['deleted']) == 1
-    assert dfpd3.delta_dict['deleted'][0] == os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+    assert len(dfpd3.delta_dict["deleted"]) == 1
+    assert dfpd3.delta_dict["deleted"][0] == os.path.join(
+        "source", "Test-Regular.ufo", "metainfo.plist"
+    )
 
 
 def test_ufodiff_dfpd_add_modified_fp_method():
     dfpd = DeltaFilepathStringDict([])
-    dfpd2 = DeltaFilepathStringDict(['Test-Regular.ufo'])
-    dfpd3 = DeltaFilepathStringDict(['Test-Regular.ufo'])
-    modified_list = [os.path.join('source', 'NotPath-Regular.ufo', 'fontinfo.plist')]
-    modified_filterpath_list = [os.path.join('source', 'Test-Regular.ufo', 'metainfo.plist')]
+    dfpd2 = DeltaFilepathStringDict(["Test-Regular.ufo"])
+    dfpd3 = DeltaFilepathStringDict(["Test-Regular.ufo"])
+    modified_list = [os.path.join("source", "NotPath-Regular.ufo", "fontinfo.plist")]
+    modified_filterpath_list = [
+        os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
+    ]
 
     # this one tests when no user requested source filter applied
     dfpd.add_modified_filepaths(modified_list)
@@ -546,12 +713,14 @@ def test_ufodiff_dfpd_add_modified_fp_method():
     # this one tests when file path is on source filter path, should include in the dictionary
     dfpd3.add_modified_filepaths(modified_filterpath_list)
 
-    assert len(dfpd.delta_dict['modified']) == 1
-    assert dfpd.delta_dict['modified'][0] == os.path.join('source', 'NotPath-Regular.ufo', 'fontinfo.plist')
+    assert len(dfpd.delta_dict["modified"]) == 1
+    assert dfpd.delta_dict["modified"][0] == os.path.join(
+        "source", "NotPath-Regular.ufo", "fontinfo.plist"
+    )
 
-    assert len(dfpd2.delta_dict['modified']) == 0
+    assert len(dfpd2.delta_dict["modified"]) == 0
 
-    assert len(dfpd3.delta_dict['modified']) == 1
-    assert dfpd3.delta_dict['modified'][0] == os.path.join("source", "Test-Regular.ufo", "metainfo.plist")
-
-
+    assert len(dfpd3.delta_dict["modified"]) == 1
+    assert dfpd3.delta_dict["modified"][0] == os.path.join(
+        "source", "Test-Regular.ufo", "metainfo.plist"
+    )

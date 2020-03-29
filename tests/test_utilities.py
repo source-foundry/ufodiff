@@ -13,11 +13,11 @@ from ufodiff.utilities import dir_exists, file_exists
 #
 # ///////////////////////////////////////////////////////
 
-valid_directory_test_path = os.path.join('tests', 'testfiles')
-valid_file_test_path = os.path.join('tests', 'testfiles', 'testfile.txt')
+valid_directory_test_path = os.path.join("tests", "testfiles")
+valid_file_test_path = os.path.join("tests", "testfiles", "testfile.txt")
 
-invalid_directory_test_path = os.path.join('tests', 'bogusdir')
-invalid_file_test_path = os.path.join('tests', 'testfiles', 'totallybogus_file.txt')
+invalid_directory_test_path = os.path.join("tests", "bogusdir")
+invalid_file_test_path = os.path.join("tests", "testfiles", "totallybogus_file.txt")
 
 
 def test_ufodiff_utilities_dir_exists_true():

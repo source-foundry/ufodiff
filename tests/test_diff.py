@@ -53,36 +53,36 @@ test_dirty_diff_string_commits_color = """\x1b[1mdiff --git a/README.md b/README
 
 # creates a temporary new git branch (testing_branch) for testing
 def make_testing_branch():
-    repo = Repo('.')
+    repo = Repo(".")
     gitobj = repo.git
     # create 'test' branch if it doesn't exist so that it can be used for tests in this module
     git_branch_string = gitobj.branch()
     git_branch_list = git_branch_string.split("\n")
     clean_branch_list = []
     for branch in git_branch_list:
-        branch = branch.replace('*', '')
-        branch = branch.replace(' ', '')
+        branch = branch.replace("*", "")
+        branch = branch.replace(" ", "")
         clean_branch_list.append(branch)
-    if 'testing_branch' in clean_branch_list:
+    if "testing_branch" in clean_branch_list:
         pass
     else:
-        gitobj.branch('testing_branch')
+        gitobj.branch("testing_branch")
 
 
 # deletes the temporary new git branch (testing_branch) for testing
 def delete_testing_branch():
-    repo = Repo('.')
+    repo = Repo(".")
     gitobj = repo.git
     # create 'test' branch if it doesn't exist so that it can be used for tests in this module
     git_branch_string = gitobj.branch()
     git_branch_list = git_branch_string.split("\n")
     clean_branch_list = []
     for branch in git_branch_list:
-        branch = branch.replace('*', '')
-        branch = branch.replace(' ', '')
+        branch = branch.replace("*", "")
+        branch = branch.replace(" ", "")
         clean_branch_list.append(branch)
-    if 'testing_branch' in clean_branch_list:
-        gitobj.branch('-d', 'testing_branch')
+    if "testing_branch" in clean_branch_list:
+        gitobj.branch("-d", "testing_branch")
 
 
 # ///////////////////////////////////////////////////////
@@ -91,8 +91,9 @@ def delete_testing_branch():
 #
 # ///////////////////////////////////////////////////////
 
+
 def test_ufodiff_diff_class_instantiation_default():
-    diff = Diff('.')
+    diff = Diff(".")
     assert diff.is_color_diff is False
     assert diff.gitrepo_path == "."
 
@@ -171,4 +172,3 @@ def test_ufodiff_diff_get_diff_string_generator_method_colored_gitidiom():
     for thing in test_generator:
         pass
     assert isinstance(test_generator, types.GeneratorType)
-
