@@ -1,20 +1,36 @@
-build: false
 environment:
   matrix:
-    - TOXENV: py27
-    - TOXENV: py34
-    - TOXENV: py35
-    - TOXENV: py36
-platform:
-  - x86
-  - x64
-init:
-  - "ECHO %TOXENV%"
-  - ps: "ls C:\\Python*"
+    - JOB: "3.8 32-bit"
+      PYTHON_HOME: "C:\\Python38"
+      TOX_PY: py38
+
+    - JOB: "3.6 64-bit"
+      PYTHON_HOME: "C:\\Python36-x64"
+      TOX_PY: py36
+
+    - JOB: "3.7 64-bit"
+      PYTHON_HOME: "C:\\Python37-x64"
+      TOX_PY: py37
+
+    - JOB: "3.8 64-bit"
+      PYTHON_HOME: "C:\\Python38-x64"
+      TOX_PY: py38
+
 install:
-  - "c:\\python27\\Scripts\\pip install tox"
+  # Prepend Python to the PATH of this build
+  - "SET PATH=%PYTHON_HOME%;%PYTHON_HOME%\\Scripts;%PATH%"
+
+  # check that we have the expected version and architecture for Python
+  - "python --version"
+  - 'python -c "import struct; print(struct.calcsize(''P'') * 8)"'
+
+  # upgrade pip and setuptools to avoid out-of-date warnings
+  - "python -m pip install --disable-pip-version-check --user --upgrade pip setuptools virtualenv"
+
+  # install the dependencies to run the tests
+  - "python -m pip install tox"
+
+build: false
+
 test_script:
-  - "git clean -f -d -x"
-  - "c:\\python27\\Scripts\\tox --version"
-  - "c:\\python27\\Scripts\\pip --version"
-  - "c:\\python27\\Scripts\\tox"
+  - "tox -e %TOX_PY%"
