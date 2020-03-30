@@ -1,5 +1,15 @@
 ## Changelog
 
+### v1.0.0
+
+- v1 release
+- remove unnecessary import statement in `subcommands.diff` module
+- black source formatting
+- update Python dependencies
+- broaden pinned depdendency definitions in requirements.txt file
+- use requirements.txt dependency versions in CI testing
+- add macOS CI testing
+
 ### v0.5.4
 
 - updated gitpython dependency to version 2.1.11
@@ -35,7 +45,6 @@
 - updated `delta`, `deltajson`, and `deltamd` argument validations
 - bugfix for the git diff performed with the `diff` and `diffnc` commands (`branch...branch` to `branch..branch`)
 
-
 ### v0.3.0
 
 - `diff` subcommand added to support colored text diffs between UFO spec source files
@@ -62,9 +71,8 @@
 - Commit SHA1 digests added to `delta` subcommand as header of standard output string
 - Commit SHA1 digests added to `deltajson` subcommand JSON string with key `commits`
 
-
 ### v0.2.0
 
 - initial release with support for the following subcommands:
-    - `ufodiff delta all`
-    - `ufodiff deltajson all`
+  - `ufodiff delta all`
+  - `ufodiff deltajson all`
