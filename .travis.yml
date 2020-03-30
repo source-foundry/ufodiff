@@ -16,6 +16,17 @@ matrix:
       install: pip3 install --upgrade tox pytest
       env: TOX_ENV=py37
       script: tox -e $TOX_ENV
+    - python: 3.7
+      dist: xenial
+      env: TOX_ENV=coverage
+      install:
+        - pip install --upgrade coverage pytest
+        - pip install .
+      script:
+        - coverage run --source ufolint -m py.test
+        - coverage report -m
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
 
 script: tox -e $TOX_ENV
 
