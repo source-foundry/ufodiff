@@ -69,3 +69,5 @@ tests/profiler.py
 
 # Test directories
 .pytest_cache
+
+.venv
