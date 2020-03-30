@@ -20,10 +20,10 @@ matrix:
       dist: xenial
       env: TOX_ENV=coverage
       install:
-        - pip install --upgrade coverage pytest
+        - pip install --upgrade coverage pytest mock
         - pip install .
       script:
-        - coverage run --source ufolint -m py.test
+        - coverage run -m pytest
         - coverage report -m
       after_success:
         - bash <(curl -s https://codecov.io/bash)
