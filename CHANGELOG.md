@@ -3,6 +3,7 @@
 ### v1.0.0
 
 - v1 release
+- eliminate Py2.7 support
 - remove unnecessary import statement in `subcommands.diff` module
 - black source formatting
 - update Python dependencies
