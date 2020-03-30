@@ -7,7 +7,6 @@
 # ====================================================
 
 import os
-import sys
 
 from git import Repo
 from ufodiff.utilities.ufo import Ufo
