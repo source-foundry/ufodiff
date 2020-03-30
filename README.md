@@ -1,6 +1,6 @@
 <img src="https://github.com/source-foundry/ufodiff/blob/images/images/ufodiff-logo-2-crunch.png?raw=true">
 
-[![PyPI](https://img.shields.io/pypi/v/ufodiff.svg)](https://pypi.org/project/ufodiff)
+[![PyPI](https://img.shields.io/pypi/v/ufodiff?color=blueviolet&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/ufodiff)
 [![Build Status](https://travis-ci.com/source-foundry/ufodiff.svg?branch=master)](https://travis-ci.com/source-foundry/ufodiff)
 [![Build status](https://ci.appveyor.com/api/projects/status/o2vdn1uf7uxau3o7/branch/master?svg=true)](https://ci.appveyor.com/project/chrissimpkins/ufodiff/branch/master)
 [![codecov](https://codecov.io/gh/source-foundry/ufodiff/branch/master/graph/badge.svg)](https://codecov.io/gh/source-foundry/ufodiff)
