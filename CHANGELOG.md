@@ -1,5 +1,12 @@
 ## Changelog
 
+### v1.0.1
+
+- update gitpython dependency to v3.1.5 - decreases package size by removing tests from distribution
+- update gitdb dependency to v4.0.5
+- update smmap dependency to v3.0.4
+- add dependabot configuration file
+
 ### v1.0.0
 
 - v1 release
