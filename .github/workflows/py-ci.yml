@@ -33,14 +33,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Python testing dependencies
-        run: pip install --upgrade pytest mock pytest-mock
+        run: pip install --upgrade pytest mock pytest-mock tox tox-gh-actions
       - name: Install Python project dependencies
         uses: py-actions/py-dependency-install@v2
         with:
           update-pip: "true"
           update-setuptools: "true"
           update-wheel: "true"
-      - name: Install project
-        run: pip install .
       - name: Python unit tests
-        run: pytest
+        run: tox
