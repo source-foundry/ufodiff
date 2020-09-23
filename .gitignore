@@ -71,3 +71,6 @@ tests/profiler.py
 .pytest_cache
 
 .venv
+
+# VSCode config
+.vscode
