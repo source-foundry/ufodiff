@@ -16,7 +16,7 @@ lib_name = "ufodiff"
 # ------------------------------------------------------------------------------
 major_version = "1"
 minor_version = "0"
-patch_version = "1"
+patch_version = "2"
 
 # ------------------------------------------------------------------------------
 # Help String
@@ -29,7 +29,8 @@ MIT License
 Source: https://github.com/source-foundry/ufodiff
 ====================================================
 
-ufodiff is a UFO source file text diff and file modification reporting tool for collaborative typeface development.
+ufodiff is a UFO source file text diff and file modification reporting tool for \
+collaborative typeface development.
 
 Subcommands:
 
@@ -49,9 +50,11 @@ Syntax:
   ufodiff diff [commits:[N] | branch:[name]]
   ufodiff diffnc [commits:[N] | branch:[name]]
 
-Increase or decrease integer value after the `commits:` argument to analyze across that number of commits in the commit history.
+Increase or decrease integer value after the `commits:` argument to analyze across \
+that number of commits in the commit history.
 
-Include an existing git branch for comparison with your current branch after the `branch:` argument.
+Include an existing git branch for comparison with your current branch after the \
+`branch:` argument.
 """
 
 # ------------------------------------------------------------------------------

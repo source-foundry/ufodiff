@@ -32,37 +32,39 @@ class Ufo(object):
         index = 0
         for path_part in path_list:
             if path_part == "images":
-                ufo_test_directory = path_list[
-                    index - 1
-                ]  # .ufo directory should be one directory level above images
-                base_filename = path_list[
-                    -1
-                ]  # base filename should have .png extension
+                # .ufo directory should be one directory level above images
+                ufo_test_directory = path_list[index - 1]
+                # base filename should have .png extension
+                base_filename = path_list[-1]
                 if (
                     len(base_filename) > 4
                     and base_filename[-4:] == ".png"
                     and ufo_test_directory[-4:] == ".ufo"
                 ):
-                    return True  # .png file in *.ufo/images directory = pass
+                    # .png file in *.ufo/images directory = pass
+                    return True
             else:
                 index += 1
-        return False  # if iterate through entire path and never satisfy above test conditions, test fails
+        # if iterate through entire path and never satisfy above test conditions,
+        # test fails
+        return False
 
     def _is_data_directory_file(self, filepath):
         path_list = filepath.split(os.path.sep)
         index = 0
         for path_part in path_list:
             if path_part == "data":
-                ufo_test_directory = path_list[
-                    index - 1
-                ]  # .ufo directory should be one level above data
-                if (
-                    ufo_test_directory[-4:] == ".ufo"
-                ):  # test for presence of *.ufo directory one level up
-                    return True  # any file in *.ufo/data directory = pass
+                # .ufo directory should be one level above data
+                ufo_test_directory = path_list[index - 1]
+                # test for presence of *.ufo directory one level up
+                if ufo_test_directory[-4:] == ".ufo":
+                    # any file in *.ufo/data directory = pass
+                    return True
             else:
                 index += 1
-        return False  # if iterate through entire path and never satisfy above test conditions, test fails
+        # if iterate through entire path and never satisfy above test conditions,
+        # test fails
+        return False
 
     def validate_file(self, filepath):
         if (
@@ -70,13 +72,11 @@ class Ufo(object):
             or filepath[-5:] == ".glif"
         ):
             return True
-        elif (
-            self._is_data_directory_file(filepath) is True
-        ):  # UFO v3 data directory file test
+        # UFO v3 data directory file test
+        elif self._is_data_directory_file(filepath) is True:
             return True
-        elif (
-            self._is_images_directory_file(filepath) is True
-        ):  # UFO v3 images directory file test
+        # UFO v3 images directory file test
+        elif self._is_images_directory_file(filepath) is True:
             return True
         else:
             return False
@@ -88,9 +88,9 @@ class Ufo(object):
             filter_string = "*" + a_file
             filter_list.append(filter_string)
         # add images directory wildcard (added in UFO v3)
-        filter_list.append("*\.ufo/images/*")
+        filter_list.append(r"*\.ufo/images/*")
         # add data directory wildcard (added in UFO v3)
-        filter_list.append("*\.ufo/data/*")
+        filter_list.append(r"*\.ufo/data/*")
         # add glyph file filters
         filter_list.append("*.glif")
         return filter_list

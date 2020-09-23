@@ -7,24 +7,26 @@
 # ====================================================
 
 """
-The app.py module defines a main() function that includes the logic for the `ufodiff` command line executable.
+The app.py module defines a main() function that includes the logic for the
+`ufodiff` command line executable.
 
-This command line executable provides file modification (add, delete, modified) and text diff reports
-for files and directory structure that are part of the Unified Font Object (UFO) specification.  These source
-files are used in typeface development.
+This command line executable provides file modification (add, delete, modified)
+and text diff reports
+for files and directory structure that are part of the Unified Font Object (UFO)
+ specification.  These source files are used in typeface development.
 """
 
 import os
 import sys
+
 from commandlines import Command
-from standardstreams import stdout, stderr
+from standardstreams import stderr, stdout
 
 from ufodiff import (
     settings,
 )  # defines application version, help string, version string, usage string
 from ufodiff.subcommands.delta import Delta
 from ufodiff.subcommands.diff import Diff
-
 from ufodiff.utilities import dir_exists
 
 
@@ -73,10 +75,12 @@ def main():
         # else:
         #     pass  # TODO: add direct git idiom call support
 
-        # recursive search for the root of the git repository x 3 levels if not found in working directory
+        # recursive search for the root of the git repository x 3 levels
+        # if not found in working directory
         verified_gitroot_path = get_git_root_path()
 
-        # perform the delta analysis on the repository, different object for commits vs branch tests
+        # perform the delta analysis on the repository, different object
+        # for commits vs branch tests
         if is_commits_test is True:
             delta = Delta(
                 verified_gitroot_path,
@@ -99,10 +103,12 @@ def main():
                 sys.stdout.write(delta.get_stdout_string(write_format="json"))
             elif c.subcmd == "deltamd":
                 sys.stdout.write(delta.get_stdout_string(write_format="markdown"))
+        # TODO: implement glyph only command handling with 'ufo delta glyph'
         # elif c.arg1 == "glyph":
-        #     pass  # TODO: implement glyph only command handling with 'ufo delta glyph'
+        #     pass
+        # TODO: implement nonglyph only command handling with 'ufo delta nonglyph'
         # elif c.arg1 == "nonglyph":
-        #     pass  # TODO: implement nonglyph only command handling with 'ufo delta nonglyph'
+        #     pass
     # DIFF SUBCOMMAND
     elif c.subcmd == "diff":
         # argument validation
@@ -138,7 +144,8 @@ def main():
             )
             sys.exit(1)
     # # DIFF-FILE SUBCOMMAND
-    # elif c.subcmd == "diff-filter":  # user specified file/directory filters on the diff performed
+    # user specified file/directory filters on the diff performed
+    # elif c.subcmd == "diff-filter":
     #     pass
     # # DIFF-FILENC SUBCOMMAND
     # elif c.subcmd == "diff-filternc":
@@ -151,13 +158,15 @@ def main():
 
 def validate_delta_commands_args(command_obj):
     """
-    Validates arguments for any delta/deltajson/deltamd command requested by user.  It provides
-    user error messages and raises SystemExit for erroneous command entry at the command line.
+    Validates arguments for any delta/deltajson/deltamd command requested
+    by user. It provides user error messages and raises SystemExit for
+    erroneous command entry at the command line.
 
     :param command_obj: a commandlines library Command object
     :return: no return object, SystemExit raised for all errors detected
     """
-    acceptable_deltacommands = ["all"]  # used in command line argument validations
+    # used in command line argument validations
+    acceptable_deltacommands = ["all"]
     # Command line argument validations
     if command_obj.argc < 3:  # expected argument number
         stderr("[ufodiff] ERROR: Missing arguments.")
@@ -182,7 +191,8 @@ def validate_delta_commands_args(command_obj):
             len(commits_list) == 2 and commits_list[1] == ""
         ):  # does not include a value following the colon
             stderr(
-                "[ufodiff] ERROR: Please include an integer value following the 'commits:' argument"
+                "[ufodiff] ERROR: Please include an integer value following "
+                "the 'commits:' argument"
             )
             sys.exit(1)
         else:
@@ -192,20 +202,23 @@ def validate_delta_commands_args(command_obj):
         branch_list = command_obj.arg2.split(":")
         if len(branch_list) == 2 and branch_list[1] == "":
             stderr(
-                "[ufodiff] ERROR: Please include the name of an existing git branch following the 'branch:' argument"
+                "[ufodiff] ERROR: Please include the name of an existing git "
+                "branch following the 'branch:' argument"
             )
             sys.exit(1)
     else:
         stderr(
-            "[ufodiff] ERROR: Please include either the 'commits:' or 'branch:' argument in the command"
+            "[ufodiff] ERROR: Please include either the 'commits:' or "
+            "'branch:' argument in the command"
         )
         sys.exit(1)
 
 
 def validate_diff_commands_args(command_obj):
     """
-    Validates arguments for any diff/diffnc command requested by user.  It provides user error
-    messages and raises SystemExit for erroneous command entry at the command line.
+    Validates arguments for any diff/diffnc command requested by user.
+    It provides user error messages and raises SystemExit for erroneous
+    command entry at the command line.
 
     :param command_obj: a commandlines library Command object
     :return: no return object, SystemExit raised for all errors detected
@@ -217,26 +230,29 @@ def validate_diff_commands_args(command_obj):
     if command_obj.arg1.startswith("commits:"):
         if len(command_obj.arg1) < 9:
             stderr(
-                "[ufodiff] ERROR: Please include an integer after the colon in the 'commits:[number]' argument"
+                "[ufodiff] ERROR: Please include an integer after the "
+                "colon in the 'commits:[number]' argument"
             )
             sys.exit(1)
         else:
             commits_list = command_obj.arg1.split(":")
             commits_number = commits_list[1]
-            # validate the number of commits as an integer value, exit with error message if not an integer
+            # validate the number of commits as an integer value, exit
+            # with error message if not an integer
             validate_commit_number(commits_number)
     if command_obj.arg1.startswith("branch:"):
         if len(command_obj.arg1) < 8:
             stderr(
-                "[ufodiff] ERROR: Please include the name of a git branch following the colon in the "
-                "'branch:[name]' argument"
+                "[ufodiff] ERROR: Please include the name of a git branch "
+                "following the colon in the 'branch:[name]' argument"
             )
             sys.exit(1)
 
 
 def validate_commit_number(commits_number):
     """
-    Validates commit number entered by user following `commits:` argument as valid integer and within appropriate range
+    Validates commit number entered by user following `commits:` argument
+    as valid integer and within appropriate range
 
     :param commits_number: string that was entered by user following `commits:` argument
     :return: no return object, raises SystemExit for all errors detected
@@ -245,8 +261,8 @@ def validate_commit_number(commits_number):
         not commits_number.isdigit()
     ):  # validate that user entered number of commits for diff is an integer
         stderr(
-            "[ufodiff] ERROR: The value following the colon in the 'commits:[number]' argument is not a valid "
-            "integer value"
+            "[ufodiff] ERROR: The value following the colon in the 'commits:[number]' "
+            "argument is not a valid integer value"
         )
         sys.exit(1)
     elif (
@@ -270,7 +286,8 @@ def get_git_root_path():
         # check to see if this assumption is correct
         if dir_exists(os.path.join(unverified_gitroot_path, ".git")):
             verified_gitroot_path = os.path.join(unverified_gitroot_path, ".git")
-        else:  # if not, recursive search up to three directories above for the git repo root
+        # if not, recursive search up to three directories above for the git repo root
+        else:
             one_level_up = os.path.abspath(
                 os.path.join(unverified_gitroot_path, os.pardir)
             )
@@ -289,14 +306,14 @@ def get_git_root_path():
                 verified_gitroot_path = os.path.dirname(three_levels_up_path)
             else:
                 stderr(
-                    "[ufodiff] ERROR: Unable to identify the root of your git repository. Please try again from "
-                    "the root of your repository"
+                    "[ufodiff] ERROR: Unable to identify the root of your git "
+                    "repository. Please try again from the root of your repository"
                 )
                 sys.exit(1)
     except Exception as e:
         stderr(
-            "[ufodiff] ERROR: Unable to identify the root of your git repository. Please try again from "
-            "the root of your repository. " + str(e)
+            "[ufodiff] ERROR: Unable to identify the root of your git repository. "
+            "Please try again from the root of your repository. " + str(e)
         )
         sys.exit(1)
 
