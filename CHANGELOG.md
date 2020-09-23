@@ -1,5 +1,13 @@
 ## Changelog
 
+### v1.0.2
+
+- fix: deprecated string literal escapes refactored to raw strings. ufo.py module (deprecated as of Py3.6)
+- reformat import statements based with default isort formatting
+- refactor all Python source to achieve line lengths < 90
+- add flake8 lint testing
+- update gitpython dependency to v3.1.8
+
 ### v1.0.1
 
 - update gitpython dependency to v3.1.5 - decreases package size by removing tests from distribution

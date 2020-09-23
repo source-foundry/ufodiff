@@ -3,6 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/ufodiff?color=blueviolet&label=PyPI&logo=python&logoColor=white)](https://pypi.org/project/ufodiff)
 [![Build Status](https://travis-ci.com/source-foundry/ufodiff.svg?branch=master)](https://travis-ci.com/source-foundry/ufodiff)
 [![Build status](https://ci.appveyor.com/api/projects/status/o2vdn1uf7uxau3o7/branch/master?svg=true)](https://ci.appveyor.com/project/chrissimpkins/ufodiff/branch/master)
+![Python Lints](https://github.com/source-foundry/ufodiff/workflows/Python%20Lints/badge.svg)
 [![codecov](https://codecov.io/gh/source-foundry/ufodiff/branch/master/graph/badge.svg)](https://codecov.io/gh/source-foundry/ufodiff)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/23e4187ff4474576b7e3334075180202)](https://app.codacy.com/app/SourceFoundry/ufodiff)
 
