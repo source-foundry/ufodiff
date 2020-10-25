@@ -18,7 +18,6 @@ UFO versions 2 and 3 are fully supported in the current release.
 ## Contents
 
 - [Contents](#contents)
-- [Current Release Status](#current-release-status)
 - [Install](#install)
 - [Quickstart Examples](#quickstart-examples)
     - [Plain Text](#plain-text)
@@ -35,12 +34,6 @@ UFO versions 2 and 3 are fully supported in the current release.
     - [Subcommand List](#subcommand-list)
 - [Issues](#issues)
 - [License](#license)
-
-## Current Release Status
-
-Stable development version.
-
-[Changelog](https://github.com/source-foundry/ufodiff/blob/master/CHANGELOG.md)
 
 ## Install
 
