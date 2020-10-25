@@ -1,5 +1,10 @@
 ## Changelog
 
+### v1.0.3
+
+- add CodeQL static code analysis
+- update gitpython dependency to v3.1.10
+
 ### v1.0.2
 
 - fix: deprecated string literal escapes refactored to raw strings. ufo.py module (deprecated as of Py3.6)
