@@ -6,6 +6,6 @@
 #
 commandlines==0.4.1       # via ufodiff (setup.py)
 gitdb==4.0.9              # via gitpython
-gitpython==3.1.18          # via ufodiff (setup.py)
+gitpython==3.1.24          # via ufodiff (setup.py)
 smmap==5.0.0              # via gitdb
 standardstreams==0.2.0    # via ufodiff (setup.py)
