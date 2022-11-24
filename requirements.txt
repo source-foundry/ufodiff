@@ -5,7 +5,7 @@
 #    pip-compile
 #
 commandlines==0.4.1       # via ufodiff (setup.py)
-gitdb==4.0.9              # via gitpython
+gitdb==4.0.10              # via gitpython
 gitpython==3.1.18          # via ufodiff (setup.py)
 smmap==5.0.0              # via gitdb
 standardstreams==0.2.0    # via ufodiff (setup.py)
